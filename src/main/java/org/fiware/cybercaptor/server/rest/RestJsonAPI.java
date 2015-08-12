@@ -15,7 +15,7 @@
  * GNU General Public License for more details.                                         *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License                    *
- * along with FIWARE Cyber Security Generic Enabler.                                    *
+ * along with FIWARE CyberCAPTOR.                                                       *
  * If not, see <http://www.gnu.org/licenses/>.                                          *
  ****************************************************************************************/
 package org.fiware.cybercaptor.server.rest;
