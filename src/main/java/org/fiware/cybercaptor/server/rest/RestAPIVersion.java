@@ -47,6 +47,6 @@ public class RestAPIVersion {
 	@Path("/detailed")
 	@Produces("text/plain")
 	public String getDetailedVersion() {
-		return "Cyber Security Generic Enabler v" + version;
-	}
+        return "CyberCAPTOR v" + version;
+    }
 }

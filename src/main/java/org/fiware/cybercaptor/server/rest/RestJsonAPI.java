@@ -66,6 +66,7 @@ public class RestJsonAPI {
      */
     @GET
     @Path("initialize")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response initialise(@Context HttpServletRequest request) throws Exception {
         String costParametersFolderPath = ProjectProperties.getProperty("cost-parameters-path");
         String databasePath = ProjectProperties.getProperty("database-path");
