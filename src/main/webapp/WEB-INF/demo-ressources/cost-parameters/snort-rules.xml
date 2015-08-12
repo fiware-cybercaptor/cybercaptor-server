@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<operational_costs_parameters>
+  <businessApplicationsTestsDuration>4.0</businessApplicationsTestsDuration>
+  <workCost>20.0</workCost>
+  <costUnavailabilityBusinessApplication>
+    <appName>Serveur web intranet</appName>
+    <costUnavailability>100.0</costUnavailability>
+  </costUnavailabilityBusinessApplication>
+  <costUnavailabilityBusinessApplication>
+    <appName>Serveur web internet</appName>
+    <costUnavailability>10.0</costUnavailability>
+  </costUnavailabilityBusinessApplication>
+  <remediationCost>10.0</remediationCost>
+  <computationPowerCost>12.0</computationPowerCost>
+  <storageCost>5.0</storageCost>
+  <deploymentDuration>0.5</deploymentDuration>
+  <remediationUninstallDuration>0.5</remediationUninstallDuration>
+  <serviceUnavailabilityDeploymentDuration>0.0</serviceUnavailabilityDeploymentDuration>
+  <restartCost>0.0</restartCost>
+  <restartDuration>0.2</restartDuration>
+  <usedPower>1.0</usedPower>
+  <usedStorage>1.0</usedStorage>
+  <maintenanceDuration>10.0</maintenanceDuration>
+  <skillRateTests>0.7</skillRateTests>
+  <skillRateDeployment>2.0</skillRateDeployment>
+  <skillRateMaintenance>1.0</skillRateMaintenance>
+</operational_costs_parameters>

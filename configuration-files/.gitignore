@@ -1,0 +1,13 @@
+*.P
+*.CSV
+*.txt
+*.xml
+old
+*.nessus
+*.xwam
+*.gen
+*.db
+topology/*.csv
+config.properties
+inputs/
+tmp/
