@@ -7,6 +7,8 @@ This project is part of FIWARE. For more information, please consult [FIWARE web
 
 CyberCAPTOR is an implementation of the Cyber Security Generic Enabler, the future developments of the [Security Monitoring GE](http://catalogue.fiware.org/enablers/security-monitoring).
 
+Build Status: [![Build Status](https://travis-ci.org/fiware-cybercaptor/cybercaptor-server.svg)](https://travis-ci.org/fiware-cybercaptor/cybercaptor-server)
+
 
 ## Development Version Installation
 
