@@ -1,5 +1,5 @@
 ############################################################
-# Dockerfile to build and run the FIWARE CyberCAPTOR Server 
+# Dockerfile to build and run the FIWARE CyberCAPTOR Server
 # Based on Ubuntu
 ############################################################
 
@@ -47,10 +47,9 @@ RUN cp -R /data/build/mulval /opt/mulval
 ENV MULVALROOT=/opt/mulval
 
 # Add the sources and build the Web Archive using Maven
-RUN mkdir -p /data/build/war
-WORKDIR /data/build/war
-ADD ./src ./src
-ADD ./pom.xml ./
+WORKDIR /data/build/
+RUN git clone https://github.com/fiware-cybercaptor/cybercaptor-server.git
+WORKDIR /data/build/cybercaptor-server
 RUN mvn package
 RUN mv ./target/cybercaptor-server*.war /var/lib/tomcat7/webapps/cybercaptor-server.war
 
@@ -60,9 +59,12 @@ RUN git clone https://github.com/fiware-cybercaptor/cyber-data-extraction.git
 WORKDIR /root/cyber-data-extraction
 RUN pip install -r requirements.txt
 
-# Add the necessary configuration files
-ADD ./configuration-files /root/.remediation
-ADD ./container/config.properties /root/.remediation/config.properties
+# Add the necessary configuration files, the vulnerability database and test inputs files
+RUN cp -R /data/build/cybercaptor-server/configuration-files /root/.remediation
+ADD ./config.properties /root/.remediation/config.properties
+ADD ./inputs /root/.remediation/inputs
+ADD ./vulnerability-remediation-database.db /root/.remediation/
+ENV VULNERABILITY_DATABASE_PATH /root/.remediation/vulnerability-remediation-database.db
 
 # Clean up
 RUN rm -rf ~/.m2
@@ -74,7 +76,7 @@ ENV CATALINA_HOME=/usr/share/tomcat7
 RUN mkdir /var/lib/tomcat7/temp
 
 RUN mkdir /etc/service/tomcat7
-ADD container/tomcat7.sh /etc/service/tomcat7/run
+ADD tomcat7.sh /etc/service/tomcat7/run
 RUN chmod a+x /etc/service/tomcat7/run
 
 EXPOSE 8080

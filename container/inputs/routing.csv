@@ -1,0 +1,4 @@
+host;destination;mask;gateway;interface
+router;10.15.10.1;255.255.255.0;10.15.10.1;eth1
+router;192.168.1.1;255.255.255.0;192.168.1.1;eth0
+router;0.0.0.0;0.0.0.0;1.1.1.1;eth2

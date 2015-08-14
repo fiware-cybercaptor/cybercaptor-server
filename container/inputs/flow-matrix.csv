@@ -1,0 +1,8 @@
+"source";"destination";"source_port";"destination_port";"protocol"
+"10.15.10.0/24";"192.168.1.0/24";"any";80;"TCP"
+"192.168.1.0/24";"10.15.10.0/24";"any";"any";"any"
+"internet";"10.15.10.0/24";"any";"any";"any"
+"internet";"10.15.10.0/24";"any";443;"TCP"
+"192.168.1.0/24";"internet";"any";"any";"any"
+"10.15.10.0/24";"internet";"any";"any";"any"
+10.15.10.11;192.168.1.112;any;5353;TCP

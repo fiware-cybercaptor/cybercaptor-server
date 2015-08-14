@@ -1,0 +1,8 @@
+Hostname;Interface Name;IP address;Connected to WAN;metric
+linux-user-1;eth0;192.168.1.111;false;7
+linux-user-2;eth0;192.168.1.112;false;30
+Dmz-1;eth0;10.15.10.11;false;0.8
+Dmz-2;eth0;10.15.10.14;false;0.7
+router;eth0;192.168.1.1;false;0.1
+router;eth1;10.15.10.1;false;0.1
+router;eth2;1.1.2.2;true
