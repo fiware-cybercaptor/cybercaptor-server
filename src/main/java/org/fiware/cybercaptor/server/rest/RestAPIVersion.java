@@ -20,9 +20,13 @@
  ****************************************************************************************/
 
 package org.fiware.cybercaptor.server.rest;
+import org.json.JSONObject;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 
 /**
@@ -45,8 +49,8 @@ public class RestAPIVersion {
 	
 	@GET
 	@Path("/detailed")
-	@Produces("text/plain")
-	public String getDetailedVersion() {
-        return "CyberCAPTOR v" + version;
+    @Produces(MediaType.APPLICATION_JSON)
+	public Response getDetailedVersion() {
+        return RestJsonAPI.returnJsonObject(new JSONObject().put("version", version));
     }
 }

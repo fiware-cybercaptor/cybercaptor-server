@@ -57,6 +57,36 @@ import java.util.logging.Logger;
 public class RestJsonAPI {
 
     /**
+     * Returns the {@link javax.ws.rs.core.Response} object from a {@link org.json.JSONObject}
+     *
+     * @param jsonObject the jsonObject to return
+     * @return the relative {@link javax.ws.rs.core.Response} object
+     */
+    public static Response returnJsonObject(JSONObject jsonObject) {
+        return Response.ok(jsonObject.toString())
+                .header("Access-Control-Allow-Origin", "http://localhost")
+                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Max-Age", "1209600")
+                .build();
+    }
+
+    /**
+     * Returns an error message, in a {@link org.json.JSONObject} ({error:"the error message"}
+     *
+     * @param errorMessage the error message to return
+     * @return the {@link javax.ws.rs.core.Response} to this {@link org.json.JSONObject}
+     */
+    public static Response returnErrorMessage(String errorMessage) {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("error", errorMessage);
+
+        return returnJsonObject(jsonObject);
+    }
+
+    /**
      * Generates the attack graph and initializes the main objects for other API calls
      * (database, attack graph, attack paths,...)
      *
@@ -433,36 +463,6 @@ public class RestJsonAPI {
         }
 
         return returnJsonObject(AttackPathManagement.getAttackGraphTopologicalJson(monitoring));
-    }
-
-    /**
-     * Returns the {@link javax.ws.rs.core.Response} object from a {@link org.json.JSONObject}
-     *
-     * @param jsonObject the jsonObject to return
-     * @return the relative {@link javax.ws.rs.core.Response} object
-     */
-    protected Response returnJsonObject(JSONObject jsonObject) {
-        return Response.ok(jsonObject.toString())
-                .header("Access-Control-Allow-Origin", "http://localhost")
-                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
-                .header("Access-Control-Allow-Credentials", "true")
-                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
-                .header("Access-Control-Max-Age", "1209600")
-                .build();
-    }
-
-    /**
-     * Returns an error message, in a {@link org.json.JSONObject} ({error:"the error message"}
-     *
-     * @param errorMessage the error message to return
-     * @return the {@link javax.ws.rs.core.Response} to this {@link org.json.JSONObject}
-     */
-    protected Response returnErrorMessage(String errorMessage) {
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("error", errorMessage);
-
-        return returnJsonObject(jsonObject);
     }
 
     protected void prepareResponse(@Context HttpServletResponse servletResponse) {

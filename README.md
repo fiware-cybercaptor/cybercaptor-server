@@ -1,7 +1,7 @@
-cybercaptor-server
+CyberCAPTOR Server
 ==============
 
-Cyber Security Monitoring Tool based on Attack Graphs - Server (Computing)
+FIWARE Cyber seCurity Attack graPh moniTORing - Server
 
 This project is part of FIWARE. For more information, please consult [FIWARE website](http://www.fiware.org/).
 
@@ -99,3 +99,76 @@ Then, the application can be accessed at http://localhost:8000/cybercaptor-serve
 - ``` /var/log/tomcat7/catalina.out ```
 - ``` `pwd`/configuration-files/tmp/xsb_log.txt ```
 - ``` `pwd`/configuration-files/tmp/input-generation.log ```
+
+## API
+
+### API usage
+
+To use the CyberCAPTOR server API, the first call to test that the server is available is
+
+```
+curl http://localhost:8080/cybercaptor-server/rest/version/detailed
+```
+
+which should returns something like
+
+```
+{"version":"4.4"}
+```
+
+Before using the API to manipulate the attack graph, the attack paths, and the remediations, 
+the first call that needs to be done is 
+
+```
+curl -c /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/initialize
+```
+
+which loads the topology, generates the attack graph with MulVAL and computes the attack paths.
+
+Note the `-c /tmp/curl.cookie` option of curl, allowing to keep the session cookie, necessary to chain calls and keep
+the attack graph and attack paths in session.
+
+Then, the calls to get the attack paths, attack graph or remediations can be used:
+
+```
+curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_path/number # Get the number of attack paths
+```
+
+Note the `-b /tmp/curl.cookie` option of curl, to load the previously saved session cookie.
+
+```
+curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_path/0 # Get the attack path 0
+```
+
+```
+curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_graph # Get the attack graph
+```
+
+```
+curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_path/0/remediations # Get the remediations for attack path 0
+```
+
+The full list of API calls and specifications can be found in [doc/API.md](doc/API.md) using the [API blueprint](https://apiblueprint.org/) syntax.
+
+### API verification
+
+The API specified using Blueprint can be checked with the [dredd](https://github.com/apiaryio/dredd) tool.
+In order to do that, first install bredd with NPM (you should have Node.js installed).
+
+```
+sudo npm install -g dredd
+```
+
+Go in the folder in which is the dredd configuration file [tools/api/dredd.yml](tools/api/dredd.yml):
+
+```
+cd tools/api
+```
+
+Execute dredd
+
+```
+dredd
+```
+
+In addition to the console reports provided by dredd, a detailed report file can be found in `tools/api/report.html`.
