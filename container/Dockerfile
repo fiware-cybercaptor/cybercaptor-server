@@ -48,14 +48,14 @@ ENV MULVALROOT=/opt/mulval
 
 # Add the sources and build the Web Archive using Maven
 WORKDIR /data/build/
-RUN git clone https://github.com/fiware-cybercaptor/cybercaptor-server.git
+RUN git clone -q https://github.com/fiware-cybercaptor/cybercaptor-server.git
 WORKDIR /data/build/cybercaptor-server
 RUN mvn package
 RUN mv ./target/cybercaptor-server*.war /var/lib/tomcat7/webapps/cybercaptor-server.war
 
 # Add the python script and its dependencies
 WORKDIR /root/
-RUN git clone https://github.com/fiware-cybercaptor/cyber-data-extraction.git
+RUN git clone -q https://github.com/fiware-cybercaptor/cyber-data-extraction.git
 WORKDIR /root/cyber-data-extraction
 RUN pip install -r requirements.txt
 
@@ -63,7 +63,7 @@ RUN pip install -r requirements.txt
 RUN cp -R /data/build/cybercaptor-server/configuration-files /root/.remediation
 ADD ./config.properties /root/.remediation/config.properties
 ADD ./inputs /root/.remediation/inputs
-ADD ./vulnerability-remediation-database.db /root/.remediation/
+RUN wget -O /root/.remediation/vulnerability-remediation-database.db https://github.com/fiware-cybercaptor/cyber-data-extraction/releases/download/4.4.1/vulnerability-remediation-database.db
 ENV VULNERABILITY_DATABASE_PATH /root/.remediation/vulnerability-remediation-database.db
 
 # Clean up
