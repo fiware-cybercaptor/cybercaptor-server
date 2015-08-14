@@ -1,0 +1,206 @@
+
+/******************************************************/
+/****         Predicates Declaration              *****/
+/******************************************************/
+
+
+/*Add local firewall rules to hosts*/
+/*TODO : Add a host to networkServiceInfo */
+
+primitive(vulExists(_host, _vulID, _program)).
+primitive(vulProperty(_vulID, _range, _consequence)).
+primitive(haclprimit(_src, _dst, _prot, _port)).
+primitive(attackerLocated(_host)).
+primitive(hasAccount(_principal, _host, _account)).
+primitive(networkServiceInfo(_ip, _program, _protocol, _port, _user)).
+primitive(installed(_h, _program)).
+primitive(vulExists(_machine,_vulID,_program,_range,_consequence)).
+primitive(isInVlan(_ip,_vlan)). /*The ip is in VLAN _vlan */
+primitive(vlanToVlan(_vlan1,_vlan2,_protocol,_port)).
+primitive(ipToVlan(_ip,_vlan,_protocol,_port)).
+primitive(vlanToIP(_vlan,_ip,_protocol,_port)).
+
+primitive(defaultLocalFilteringBehavior(_toip,_behavior)). /* allow / deny*/
+primitive(localFilteringRule(_fromIP,_toIP,_port,_behavior)).
+
+/*multi-interface*/
+primitive(hasIP(_host,_IP)).
+
+
+
+meta(cvss(_vulID, _ac)).
+
+derived(ipInSameVLAN(_ip1,_ip2)).
+derived(localAccessEnabled(_ip,_fromIP,port)).
+derived(execCode(_host, _user)).
+derived(netAccess(_ip,_protocol,_port)).
+derived(canAccessHost(_host)).
+derived(hacl(_src, _dst, _prot, _port)).
+
+meta(attackGoal(_)).
+meta(advances(_, _)).
+
+/******************************************************/
+/****         Tabling Predicates                  *****/
+/*   All derived predicates should be tabled          */
+/******************************************************/
+
+:- table execCode/2.
+:- table netAccess/3.
+:- table canAccessHost/1.
+:- table vulExists/5.
+:- table hacl/4.
+:- table ipInSameVLAN/2.
+:- table localAccessEnabled/3.
+
+/******************************************************/
+/****         Interaction Rules                   *****/
+/******************************************************/
+
+/****** Section execCode ******
+interaction_rule(
+   (execCode(H, Perm) :-
+	hasAccount(P, H, Perm)),
+   rule_desc('Insider threat', 1)).
+*/
+/*
+interaction_rule(
+  (execCode(Host, Privilege) :-
+    networkServiceInfo(IP, _, _, _, Privilege),
+    hasIP(Host,IP),
+	execCode(Host, root)),
+  rule_desc('Root has all privileges',
+  1.0)).
+ */ 
+interaction_rule(
+  (execCode(Host, root) :-
+	execCode(Host, _Perm2),
+	vulExists(Host, _, Software, localExploit, privEscalation)),
+  rule_desc('local exploit',
+  1.0)).
+
+interaction_rule(
+  (execCode(H, 'user') :-
+	vulExists(H, _, Software, remoteExploit, privEscalation),
+	hasIP(H,IP),
+	networkServiceInfo(IP, Software, Protocol, Port, 'user'),
+	netAccess(IP, Protocol, Port)),
+  rule_desc('remote exploit of a server program',
+  1.0)).
+
+
+interaction_rule(
+  (netAccess(IP2, Protocol, Port) :-
+	execCode(H1, _),  /* Any permission level */
+/*	advances(H1, H2), */
+	hasIP(H1,IP1),
+/*      hasIP(H2,IP2), */
+	hasIP(H2, IP2),
+	H1 \== H2,
+    	hacl(IP1, IP2, Protocol, Port)),
+  rule_desc('multi-hop access',
+  0.5)).
+
+/* Change rules : attackerLocated
+interaction_rule(
+  (netAccess(IP, Protocol, Port) :-
+	attackerLocated(Zone),
+	hacl(Zone, IP, Protocol, Port)),
+  rule_desc('direct IP access',
+  1.0)).
+
+interaction_rule(
+  (netAccess(IP, Protocol, Port) :-
+	attackerLocated(IP)),
+  rule_desc('direct on-host access',
+  1.0)).
+*/
+
+interaction_rule(
+  (execCode(Host, root) :-
+	attackerLocated(Host)),
+  rule_desc('Attacker is root on his machine',
+  1.0)).
+
+
+/****** Section canAccessHost ******/
+interaction_rule(
+  (canAccessHost(H) :-
+	execCode(H, _Perm)),
+  rule_desc('Access a host through executing code on the machine',
+  1.0)).
+
+
+
+
+interaction_rule((vulExists(H, ID, Sw, Range, Consequence):-
+	        vulExists(H, ID, Sw),
+		vulProperty(ID, Range, Consequence)),
+             rule_desc('',
+             1)).
+
+
+
+interaction_rule(
+    (hacl(IP1,IP2,Protocol,Port) :-
+        haclprimit(IP1,IP2,Protocol,Port)),
+    rule_desc('The HACL has been defined manually',
+   1.0)). 
+
+/*VLAN interaction rules*/
+interaction_rule(
+    (ipInSameVLAN(IP1,IP2) :-
+        isInVlan(IP1,Vlan),
+        IP1 \== IP2 ,
+        isInVlan(IP2,Vlan)),
+    rule_desc('Interfaces are in the same vlan',
+   1.0)).
+   
+/*VLAN interaction rules*/
+interaction_rule(
+    (hacl(IP1,IP2,_,_) :-
+        ipInSameVLAN(IP1,IP2),
+        localAccessEnabled(IP1,IP2,Port)),
+    rule_desc('Access enabled between hosts in same vlan',
+   1.0)).
+   
+interaction_rule(
+    (hacl(IP1,IP2,Protocol,Port) :-
+        vlanToVlan(Vlan1,Vlan2,Protocol,Port),
+        Vlan1 \== Vlan2 ,
+        isInVlan(IP1,Vlan1),
+        isInVlan(IP2,Vlan2)),
+    rule_desc('Access across VLANs',
+   1.0)). /*Access across VLANs*/
+
+interaction_rule(
+    (hacl(IP1,IP2,Protocol,Port) :-
+        ipToVlan(IP1,Vlan,Protocol,Port),
+        isInVlan(IP2,Vlan)),
+    rule_desc('Access to VLAN',
+   1.0)).  
+   
+   
+interaction_rule(
+    (hacl(IP1,IP2,Protocol,Port) :-
+        vlanToIP(Vlan,IP2,Protocol,Port),
+        isInVlan(IP1,Vlan)),
+    rule_desc('Access from VLAN',
+   1.0)).
+   
+   
+interaction_rule(
+  (localAccessEnabled(FromIP,ToIP,_) :-
+	defaultLocalFilteringBehavior(ToIP, allow)),
+  rule_desc('No local filtering on this host',
+  1.0)).
+  
+interaction_rule(
+  (localAccessEnabled(FromIp,ToIP,Port) :-
+	localFilteringRule(FromIP,ToIP,Port, allow)),
+  rule_desc('Local filtering allow this access',
+  1.0)).  
+
+
+
+
