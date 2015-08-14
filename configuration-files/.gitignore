@@ -10,4 +10,3 @@ old
 topology/*.csv
 config.properties
 inputs/
-tmp/
