@@ -8,12 +8,34 @@
     <packaging>war</packaging>
     <version>4.4.3</version>
     <name>cybercaptor-server</name>
+    <description>FIWARE Cyber seCurity Attack graPh moniTORing - Server</description>
+    <url>https://github.com/fiware-cybercaptor/cybercaptor-server</url>
+
+    <issueManagement>
+        <url>https://github.com/fiware-cybercaptor/cybercaptor-server/issues</url>
+        <system>GitHub</system>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE v3</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://github.com/fiware-cybercaptor/cybercaptor-server</url>
+        <connection>scm:git:git://github.com/fiware-cybercaptor/cybercaptor-server.git</connection>
+        <developerConnection>scm:git:git@github.com:fiware-cybercaptor/cybercaptor-client.git</developerConnection>
+    </scm>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.encoding>UTF-8</project.encoding>
         <project.source.version>1.7</project.source.version>
         <project.target.version>1.7</project.target.version>
-        <project.encoding>UTF-8</project.encoding>
         <jersey.version>2.13</jersey.version>
+        <github.global.server>github</github.global.server>
     </properties>
     <dependencies>
         <dependency>
@@ -106,6 +128,38 @@
                     <path>/cybercaptor-server</path>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.ju-n.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <server>github</server>
+                    <message>Update ${project.name} website and documentation.</message>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>site-deploy</phase>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <reporting>
@@ -113,7 +167,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.1</version>
+                <version>2.10.3</version>
                 <configuration>
                     <aggregate>true</aggregate>
                     <show>private</show>
@@ -121,9 +175,6 @@
                     <header>FIWARE CyberCAPTOR Server, ${project.version}</header>
                     <footer>FIWARE CyberCAPTOR Server, ${project.version}</footer>
                     <doctitle>FIWARE CyberCAPTOR Server, ${project.version}</doctitle>
-                    <links>
-                        <link>http://static.springsource.org/spring/docs/3.0.x/javadoc-api/</link>
-                    </links>
                 </configuration>
             </plugin>
         </plugins>

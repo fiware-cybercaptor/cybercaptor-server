@@ -1,14 +1,13 @@
 CyberCAPTOR Server
 ==============
 
-FIWARE Cyber seCurity Attack graPh moniTORing - Server
+[FIWARE Cyber seCurity Attack graPh moniTORing - Server](https://fiware-cybercaptor.github.io/cybercaptor-server/)
 
 This project is part of FIWARE. For more information, please consult [FIWARE website](http://www.fiware.org/).
 
 CyberCAPTOR is an implementation of the Cyber Security Generic Enabler, the future developments of the [Security Monitoring GE](http://catalogue.fiware.org/enablers/security-monitoring).
 
 Build Status: [![Build Status](https://travis-ci.org/fiware-cybercaptor/cybercaptor-server.svg)](https://travis-ci.org/fiware-cybercaptor/cybercaptor-server)
-
 
 ## Development Version Installation
 
@@ -149,6 +148,32 @@ curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/atta
 ```
 
 The full list of API calls and specifications can be found in [doc/API.md](doc/API.md) using the [API blueprint](https://apiblueprint.org/) syntax.
+
+## Developers
+
+### Javadoc
+
+The Javadoc can be found on [github pages](https://fiware-cybercaptor.github.io/cybercaptor-server/apidocs/index.html)
+
+It can be updated with Maven using 
+
+```
+ mvn site-deploy
+```
+
+Don't forget to configure GitHub OAuth token in `~/.m2/settings.xml`. 
+Tokens can be generated on https://github.com/settings/tokens, with repo and user:email authorized scopes.
+
+```
+<settings>
+      <servers>
+          <server>
+                <id>github</id>
+                <password>OAuth token</password>
+          </server>
+      </servers>
+</settings>
+```
 
 ### API verification
 
