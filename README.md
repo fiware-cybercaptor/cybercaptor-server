@@ -81,16 +81,18 @@ docker build -t cybersecurityge .
 If you want to run the server in foreground, launch the following command:
 
 ```
-docker run --rm --name cybersecurityge -p 8000:8080 cybersecurityge
+docker run --rm --name cybersecurityge -p 8000:8080 fiwarecybercaptor/cybercaptor-server
 ```
 
 If you want to run the server in background, launch the following command:
 
 ```
-docker run -d --rm --name cybersecurityge -p 8000:8080 cybersecurityge
+docker run -d --rm --name cybersecurityge -p 8000:8080 fiwarecybercaptor/cybercaptor-server
 ```
 
 Then, the application can be accessed at http://localhost:8000/cybercaptor-server/.
+
+More details about building and/or running the Docker container can be found in [container/README.md](container/README.md)
 
 ## Debugging
 
