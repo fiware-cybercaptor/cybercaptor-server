@@ -7,6 +7,4 @@ old
 *.xwam
 *.gen
 *.db
-topology/*.csv
 config.properties
-inputs/
