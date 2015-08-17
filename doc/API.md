@@ -33,7 +33,7 @@ API calls **after** the `initialize` call (the load of the database and generati
 Generates the attack graph and initializes the main objects needed by other API calls (database, attack graph, attack paths,...).
 
 ### Initialize from data on disk [GET]
-From the data on disk (.csv inputs files and Nessus vulnerabiliy scan) 
+From the data on disk (.csv inputs files and Nessus vulnerability scan)
 
 + Response 200 (application/json)
 
@@ -62,7 +62,7 @@ From an XML topology file containing all information about network topology, fir
         <route>
         <destination>0.0.0.0</destination>
         <mask>0.0.0.0</mask>
-        <gateway>192.168.1.1</gateway>
+        <gateway>192.168.1.111</gateway>
         <interface>eth0</interface>
         </route>
         </routes>
@@ -100,7 +100,7 @@ From an XML topology file containing all information about network topology, fir
         <route>
         <destination>0.0.0.0</destination>
         <mask>0.0.0.0</mask>
-        <gateway>192.168.1.1</gateway>
+        <gateway>192.168.1.111</gateway>
         <interface>eth0</interface>
         </route>
         </routes>

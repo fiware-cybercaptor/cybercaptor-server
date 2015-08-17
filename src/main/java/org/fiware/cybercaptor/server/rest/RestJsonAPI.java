@@ -43,6 +43,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -129,7 +130,84 @@ public class RestJsonAPI {
         }
         attackPaths = attackPathToKeep;
 
-        Logger.getAnonymousLogger().log(Level.INFO, "Attack paths scored");
+        Logger.getAnonymousLogger().log(Level.INFO, attackPaths.size() + " attack paths scored");
+        Monitoring monitoring = new Monitoring(costParametersFolderPath);
+        monitoring.setAttackPathList(attackPaths);
+        monitoring.setInformationSystem(informationSystem);
+        monitoring.setAttackGraph((MulvalAttackGraph) attackGraph);
+
+        request.getSession(true).setAttribute("database", database);
+        request.getSession(true).setAttribute("monitoring", monitoring);
+
+        return returnJsonObject(new JSONObject().put("status", "Loaded"));
+    }
+
+    /**
+     * OPTIONS call necessary for the Access-Control-Allow-Origin of the POST
+     *
+     * @param servletResponse the response
+     * @return the HTTP response
+     */
+    @OPTIONS
+    @Path("/initialize")
+    public Response initializeOptions(@Context HttpServletResponse servletResponse) {
+        prepareResponse(servletResponse);
+        return null;
+    }
+
+    /**
+     * Generates the attack graph and initializes the main objects for other API calls
+     * (database, attack graph, attack paths,...).
+     * Load the objects from the POST XML file describing the whole network topology
+     *
+     * @param request the HTTP request
+     * @return the HTTP response
+     * @throws Exception
+     */
+    @POST
+    @Path("/initialize")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response initializeFromXMLFile(@Context HttpServletRequest request, String xmlString) throws Exception {
+        String costParametersFolderPath = ProjectProperties.getProperty("cost-parameters-path");
+        String databasePath = ProjectProperties.getProperty("database-path");
+
+        if (xmlString == null || xmlString.isEmpty())
+            return returnErrorMessage("The input file is empty.");
+
+        Logger.getAnonymousLogger().log(Level.INFO, "Load the vulnerability and remediation database");
+        Database database = new Database(databasePath);
+
+        String topologyFilePath = ProjectProperties.getProperty("topology-path");
+
+        Logger.getAnonymousLogger().log(Level.INFO, "Storing topology in " + topologyFilePath);
+        PrintWriter out = new PrintWriter(topologyFilePath);
+        out.print(xmlString);
+        out.close();
+
+        Logger.getAnonymousLogger().log(Level.INFO, "Loading topology " + topologyFilePath);
+
+        InformationSystem informationSystem = InformationSystemManagement.loadTopologyXMLFile(topologyFilePath, database);
+
+        AttackGraph attackGraph = InformationSystemManagement.prepareInputsAndExecuteMulVal(informationSystem);
+
+        if (attackGraph == null)
+            return returnErrorMessage("the attack graph is empty");
+        Logger.getAnonymousLogger().log(Level.INFO, "Launch scoring function");
+        attackGraph.loadMetricsFromTopology(informationSystem);
+
+        List<AttackPath> attackPaths = AttackPathManagement.scoreAttackPaths(attackGraph, attackGraph.getNumberOfVertices());
+
+        //Delete attack paths that have less than 3 hosts (attacker that pown its own host).
+        List<AttackPath> attackPathToKeep = new ArrayList<AttackPath>();
+        for (AttackPath attackPath : attackPaths) {
+            if (attackPath.vertices.size() > 3) {
+                attackPathToKeep.add(attackPath);
+            }
+        }
+        attackPaths = attackPathToKeep;
+
+        Logger.getAnonymousLogger().log(Level.INFO, attackPaths.size() + " attack paths scored");
         Monitoring monitoring = new Monitoring(costParametersFolderPath);
         monitoring.setAttackPathList(attackPaths);
         monitoring.setInformationSystem(informationSystem);
