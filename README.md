@@ -73,7 +73,7 @@ If the result is ```{"status":"Loaded"}```, the application has been properly bu
 ### Build container (optional)
 
 ```
-docker build -t cybersecurityge .
+docker build -t cybercaptor-server .
 ```
 
 ### Run container
@@ -81,13 +81,13 @@ docker build -t cybersecurityge .
 If you want to run the server in foreground, launch the following command:
 
 ```
-docker run --rm --name cybersecurityge -p 8000:8080 fiwarecybercaptor/cybercaptor-server
+docker run --rm --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cybercaptor-server
 ```
 
 If you want to run the server in background, launch the following command:
 
 ```
-docker run -d --rm --name cybersecurityge -p 8000:8080 fiwarecybercaptor/cybercaptor-server
+docker run -d --rm --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cybercaptor-server
 ```
 
 Then, the application can be accessed at http://localhost:8000/cybercaptor-server/.
