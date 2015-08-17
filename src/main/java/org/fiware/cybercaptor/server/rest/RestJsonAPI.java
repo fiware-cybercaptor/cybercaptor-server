@@ -220,6 +220,25 @@ public class RestJsonAPI {
     }
 
     /**
+     * Get the XML topology
+     *
+     * @param request the HTTP Request
+     * @return the HTTP Response
+     */
+    @GET
+    @Path("/topology")
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getTopology(@Context HttpServletRequest request) {
+        Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
+
+        if (monitoring == null) {
+            return Response.ok("The monitoring object is empty. Did you forget to " +
+                    "initialize it ?").build();
+        }
+        return Response.ok(new XMLOutputter(Format.getPrettyFormat()).outputString(monitoring.getInformationSystem().toDomXMLElement())).build();
+    }
+
+    /**
      * Get the hosts list
      *
      * @param request the HTTP Request

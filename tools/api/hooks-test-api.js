@@ -11,4 +11,17 @@ hooks.beforeEach(function (transaction) {
     if (stash['cookie'] != undefined) {
         transaction.request['headers']['Cookie'] = stash['cookie'];
     }
+    //Delete all spaces in XML in expected body
+    if (transaction.expected.headers['Content-Type'] === 'application/xml') {
+        transaction.expected.body = transaction.expected.body.replace(/\s/g, '');
+    }
+
+});
+
+//Delete all spaces in XML in real body
+hooks.beforeEachValidation(function (transaction) {
+    if (transaction.real.headers['Content-Type'] === 'application/xml' || transaction.real.headers['content-type'] === 'application/xml') {
+        transaction.real.body = transaction.real.body.replace(/\s/g, '');
+    }
+
 });

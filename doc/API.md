@@ -111,6 +111,104 @@ From an XML topology file containing all information about network topology, fir
 
         {"status":"Loaded"}
 
+## Group Get the XML topology [/rest/json/topology]
+Get the XML topology (for example, this can be used to backup the topology, and to load it again with /initialize)
+
+### Get XML topology [GET]
+Get the XML topology for backup
+
++ Response 200 (application/xml)
+
+    + Headers
+
+            Content-Length: 2174
+
+    + Body
+
+            <topology>
+              <machine>
+                <name>linux-user-1</name>
+                <cpe>cpe:/</cpe>
+                <interfaces>
+                  <interface>
+                    <name>eth0</name>
+                    <vlan>
+                      <name>user-lan</name>
+                      <label>user-lan</label>
+                    </vlan>
+                    <ipaddress>192.168.1.111</ipaddress>
+                    <directly-connected>
+                      <ipaddress>192.168.1.112</ipaddress>
+                    </directly-connected>
+                  </interface>
+                </interfaces>
+                <services />
+                <routes>
+                  <route>
+                    <destination>0.0.0.0</destination>
+                    <mask>0.0.0.0</mask>
+                    <gateway>192.168.1.111</gateway>
+                    <interface>eth0</interface>
+                  </route>
+                </routes>
+                <input-firewall>
+                  <default-policy>ACCEPT</default-policy>
+                </input-firewall>
+                <output-firewall>
+                  <default-policy>ACCEPT</default-policy>
+                </output-firewall>
+              </machine>
+              <machine>
+                <name>linux-user-2</name>
+                <cpe>cpe:/</cpe>
+                <interfaces>
+                  <interface>
+                    <name>eth0</name>
+                    <vlan>
+                      <name>user-lan</name>
+                      <label>user-lan</label>
+                    </vlan>
+                    <ipaddress>192.168.1.112</ipaddress>
+                    <directly-connected>
+                      <ipaddress>192.168.1.111</ipaddress>
+                    </directly-connected>
+                  </interface>
+                </interfaces>
+                <services>
+                  <service>
+                    <name>mdns</name>
+                    <ipaddress>192.168.1.112</ipaddress>
+                    <protocol>TCP</protocol>
+                    <port>5353</port>
+                    <CPE>cpe:/</CPE>
+                    <vulnerabilities>
+                      <vulnerability>
+                        <type>remoteExploit</type>
+                        <goal>privEscalation</goal>
+                        <cve>CVE-2007-2446</cve>
+                      </vulnerability>
+                    </vulnerabilities>
+                  </service>
+                </services>
+                <routes>
+                  <route>
+                    <destination>0.0.0.0</destination>
+                    <mask>0.0.0.0</mask>
+                    <gateway>192.168.1.111</gateway>
+                    <interface>eth0</interface>
+                  </route>
+                </routes>
+                <input-firewall>
+                  <default-policy>ACCEPT</default-policy>
+                </input-firewall>
+                <output-firewall>
+                  <default-policy>ACCEPT</default-policy>
+                </output-firewall>
+              </machine>
+            </topology>
+
+
+
 ## Group Host with init [/rest/json/host/list]
 Calls related to hosts after initialization.
 

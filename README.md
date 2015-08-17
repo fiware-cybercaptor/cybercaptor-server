@@ -156,6 +156,10 @@ curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/atta
 curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_path/0/remediations # Get the remediations for attack path 0
 ```
 
+```
+curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/topology # Get the XML network topology (useful for backups)
+```
+
 The full list of API calls and specifications can be found in [doc/API.md](doc/API.md) using the [API blueprint](https://apiblueprint.org/) syntax.
 
 ## Developers
