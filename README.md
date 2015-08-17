@@ -129,6 +129,13 @@ which loads the topology, generates the attack graph with MulVAL and computes th
 Note the `-c /tmp/curl.cookie` option of curl, allowing to keep the session cookie, necessary to chain calls and keep
 the attack graph and attack paths in session.
 
+It is also possible to load the topology from an XML file, or a XML string containing the XML network topology, using the
+POST method of the `/rest/json/initialize` call :
+
+```
+curl -c /tmp/curl.cookie -H "Content-Type: application/xml" -X POST -d '<topology><machine><name>linux-user-1</name><security_requirement>7</security_requirement><interfaces><interface><name>eth0</name><ipaddress>192.168.1.111</ipaddress><vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces><routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask><gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine><machine><name>linux-user-2</name><security_requirement>30</security_requirement><interfaces><interface><name>eth0</name><ipaddress>192.168.1.112</ipaddress><vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces><services><service><name>mdns</name><ipaddress>192.168.1.112</ipaddress><protocol>udp</protocol><port>5353</port><vulnerabilities><vulnerability><type>remoteExploit</type><cve>CVE-2007-2446</cve><goal>privEscalation</goal><cvss>10.0</cvss></vulnerability></vulnerabilities></service></services><routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask><gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine></topology>' http://localhost:8080/cybercaptor-server/rest/json/initialize
+```
+
 Then, the calls to get the attack paths, attack graph or remediations can be used:
 
 ```
