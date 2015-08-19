@@ -42,7 +42,6 @@ import org.json.JSONObject;
 import org.json.XML;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -68,9 +67,12 @@ public class RestJsonAPI {
      * @param jsonObject the jsonObject to return
      * @return the relative {@link javax.ws.rs.core.Response} object
      */
-    public static Response returnJsonObject(JSONObject jsonObject) {
+    public static Response returnJsonObject(HttpServletRequest request, JSONObject jsonObject) {
+        // client's origin
+        String clientOrigin = request.getHeader("origin");
+
         return Response.ok(jsonObject.toString())
-                .header("Access-Control-Allow-Origin", "http://localhost")
+                .header("Access-Control-Allow-Origin", clientOrigin)
                 .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
                 .header("Access-Control-Allow-Credentials", "true")
                 .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
@@ -84,12 +86,12 @@ public class RestJsonAPI {
      * @param errorMessage the error message to return
      * @return the {@link javax.ws.rs.core.Response} to this {@link org.json.JSONObject}
      */
-    public static Response returnErrorMessage(String errorMessage) {
+    public static Response returnErrorMessage(HttpServletRequest request, String errorMessage) {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("error", errorMessage);
 
-        return returnJsonObject(jsonObject);
+        return returnJsonObject(request, jsonObject);
     }
 
     /**
@@ -121,7 +123,7 @@ public class RestJsonAPI {
 
         AttackGraph attackGraph = InformationSystemManagement.generateAttackGraphWithMulValUsingAlreadyGeneratedMulVALInputFile();
         if (attackGraph == null)
-            return returnErrorMessage("the attack graph is empty");
+            return returnErrorMessage(request, "the attack graph is empty");
         Logger.getAnonymousLogger().log(Level.INFO, "Launch scoring function");
         attackGraph.loadMetricsFromTopology(informationSystem);
         List<AttackPath> attackPaths = AttackPathManagement.scoreAttackPaths(attackGraph, attackGraph.getNumberOfVertices());
@@ -144,20 +146,18 @@ public class RestJsonAPI {
         request.getSession(true).setAttribute("database", database);
         request.getSession(true).setAttribute("monitoring", monitoring);
 
-        return returnJsonObject(new JSONObject().put("status", "Loaded"));
+        return returnJsonObject(request, new JSONObject().put("status", "Loaded"));
     }
 
     /**
      * OPTIONS call necessary for the Access-Control-Allow-Origin of the POST
      *
-     * @param servletResponse the response
      * @return the HTTP response
      */
     @OPTIONS
     @Path("/initialize")
-    public Response initializeOptions(@Context HttpServletResponse servletResponse) {
-        prepareResponse(servletResponse);
-        return null;
+    public Response initializeOptions(@Context HttpServletRequest request) {
+        return returnJsonObject(request, new JSONObject());
     }
 
     /**
@@ -178,7 +178,7 @@ public class RestJsonAPI {
         String databasePath = ProjectProperties.getProperty("database-path");
 
         if (xmlString == null || xmlString.isEmpty())
-            return returnErrorMessage("The input text string is empty.");
+            return returnErrorMessage(request, "The input text string is empty.");
 
         Logger.getAnonymousLogger().log(Level.INFO, "Load the vulnerability and remediation database");
         Database database = new Database(databasePath);
@@ -197,7 +197,7 @@ public class RestJsonAPI {
         AttackGraph attackGraph = InformationSystemManagement.prepareInputsAndExecuteMulVal(informationSystem);
 
         if (attackGraph == null)
-            return returnErrorMessage("the attack graph is empty");
+            return returnErrorMessage(request, "the attack graph is empty");
         Logger.getAnonymousLogger().log(Level.INFO, "Launch scoring function");
         attackGraph.loadMetricsFromTopology(informationSystem);
 
@@ -221,7 +221,7 @@ public class RestJsonAPI {
         request.getSession(true).setAttribute("database", database);
         request.getSession(true).setAttribute("monitoring", monitoring);
 
-        return returnJsonObject(new JSONObject().put("status", "Loaded"));
+        return returnJsonObject(request, new JSONObject().put("status", "Loaded"));
     }
 
     /**
@@ -245,7 +245,7 @@ public class RestJsonAPI {
 
         if (!body.getMediaType().equals(MediaType.APPLICATION_XML_TYPE) && !body.getMediaType().equals(MediaType.TEXT_PLAIN)
                 && !body.getMediaType().equals(MediaType.TEXT_XML))
-            return returnErrorMessage("The file is not an XML file");
+            return returnErrorMessage(request, "The file is not an XML file");
         String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
 
         return initializeFromXMLText(request, xmlFileString);
@@ -284,17 +284,16 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
-        return returnJsonObject(monitoring.getInformationSystem().getHostsListJson());
+        return returnJsonObject(request, monitoring.getInformationSystem().getHostsListJson());
     }
 
     @OPTIONS
     @Path("/host/list")
-    public Response setHostListOptions(@Context HttpServletResponse servletResponse) {
-        prepareResponse(servletResponse);
-        return null;
+    public Response setHostListOptions(@Context HttpServletRequest request) {
+        return returnJsonObject(request, new JSONObject());
     }
 
     /**
@@ -311,15 +310,15 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
         JSONObject json = new JSONObject(jsonString);
         try {
             InformationSystemManagement.loadHostsSecurityRequirementsFromJson(monitoring, json);
-            return returnJsonObject(null);
+            return returnJsonObject(request, new JSONObject());
         } catch (Exception e) {
-            return returnErrorMessage(e.getMessage());
+            return returnErrorMessage(request, e.getMessage());
         }
 
 
@@ -338,13 +337,13 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         Element attackPathsXML = AttackPathManagement.getAttackPathsXML(monitoring);
         XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
-        return returnJsonObject(XML.toJSONObject(output.outputString(attackPathsXML)));
+        return returnJsonObject(request, XML.toJSONObject(output.outputString(attackPathsXML)));
 
     }
 
@@ -361,11 +360,11 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
-        return returnJsonObject(new JSONObject().put("number", monitoring.getAttackPathList().size()));
+        return returnJsonObject(request, new JSONObject().put("number", monitoring.getAttackPathList().size()));
     }
 
     /**
@@ -382,14 +381,14 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         int numberAttackPaths = monitoring.getAttackPathList().size();
 
         if (id >= numberAttackPaths) {
-            return returnErrorMessage("The attack path " + id + " does not exist. There are only" +
+            return returnErrorMessage(request, "The attack path " + id + " does not exist. There are only" +
                     numberAttackPaths + " attack paths (0 to " +
                     (numberAttackPaths - 1) + ")");
         }
@@ -397,7 +396,7 @@ public class RestJsonAPI {
         Element attackPathXML = AttackPathManagement.getAttackPathXML(monitoring, id);
         XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
 
-        return returnJsonObject(XML.toJSONObject(output.outputString(attackPathXML)));
+        return returnJsonObject(request, XML.toJSONObject(output.outputString(attackPathXML)));
     }
 
     /**
@@ -414,19 +413,19 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         int numberAttackPaths = monitoring.getAttackPathList().size();
 
         if (id >= numberAttackPaths) {
-            return returnErrorMessage("The attack path " + id + " does not exist. There are only" +
+            return returnErrorMessage(request, "The attack path " + id + " does not exist. There are only" +
                     numberAttackPaths + " attack paths (0 to " +
                     (numberAttackPaths - 1) + ")");
         }
 
-        return returnJsonObject(AttackPathManagement.getAttackPathTopologicalJson(monitoring, id));
+        return returnJsonObject(request, AttackPathManagement.getAttackPathTopologicalJson(monitoring, id));
     }
 
     /**
@@ -444,19 +443,19 @@ public class RestJsonAPI {
         Database db = ((Database) request.getSession(true).getAttribute("database"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         if (db == null) {
-            return returnErrorMessage("The database object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The database object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         int numberAttackPaths = monitoring.getAttackPathList().size();
 
         if (id >= numberAttackPaths) {
-            return returnErrorMessage("The attack path " + id + " does not exist. There are only" +
+            return returnErrorMessage(request, "The attack path " + id + " does not exist. There are only" +
                     numberAttackPaths + " attack paths (0 to " +
                     (numberAttackPaths - 1) + ")");
         }
@@ -464,7 +463,7 @@ public class RestJsonAPI {
         Element remediationXML = AttackPathManagement.getRemediationXML(monitoring, id, db);
         XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
 
-        return returnJsonObject(XML.toJSONObject(output.outputString(remediationXML)));
+        return returnJsonObject(request, XML.toJSONObject(output.outputString(remediationXML)));
     }
 
     /**
@@ -483,19 +482,19 @@ public class RestJsonAPI {
         Database db = ((Database) request.getSession(true).getAttribute("database"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         if (db == null) {
-            return returnErrorMessage("The database object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The database object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         int numberAttackPaths = monitoring.getAttackPathList().size();
 
         if (id >= numberAttackPaths) {
-            return returnErrorMessage("The attack path " + id + " does not exist. There are only" +
+            return returnErrorMessage(request, "The attack path " + id + " does not exist. There are only" +
                     numberAttackPaths + " attack paths (0 to " +
                     (numberAttackPaths - 1) + ")");
         }
@@ -505,7 +504,7 @@ public class RestJsonAPI {
         int numberRemediations = remediations.size();
 
         if (id_remediation >= numberRemediations) {
-            return returnErrorMessage("The remediation " + id_remediation + " does not exist. There are only" +
+            return returnErrorMessage(request, "The remediation " + id_remediation + " does not exist. There are only" +
                     numberRemediations + " remediations (0 to " +
                     (numberRemediations - 1) + ")");
         }
@@ -525,11 +524,11 @@ public class RestJsonAPI {
 
             Element attackGraphXML = simulatedAttackGraph.toDomElement();
             XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
-            return returnJsonObject(XML.toJSONObject(output.outputString(attackGraphXML)));
+            return returnJsonObject(request, XML.toJSONObject(output.outputString(attackGraphXML)));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return returnErrorMessage("Error during the simulation of the remediation.");
+        return returnErrorMessage(request, "Error during the simulation of the remediation.");
 
     }
 
@@ -546,13 +545,13 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
         Element attackGraphXML = monitoring.getAttackGraph().toDomElement();
         XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
-        return returnJsonObject(XML.toJSONObject(output.outputString(attackGraphXML)));
+        return returnJsonObject(request, XML.toJSONObject(output.outputString(attackGraphXML)));
     }
 
     /**
@@ -568,11 +567,11 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
-        return returnJsonObject(new JSONObject().put("score", monitoring.getAttackGraph().globalScore));
+        return returnJsonObject(request, new JSONObject().put("score", monitoring.getAttackGraph().globalScore));
     }
 
     /**
@@ -588,18 +587,11 @@ public class RestJsonAPI {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
 
         if (monitoring == null) {
-            return returnErrorMessage("The monitoring object is empty. Did you forget to " +
+            return returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
                     "initialize it ?");
         }
 
-        return returnJsonObject(AttackPathManagement.getAttackGraphTopologicalJson(monitoring));
+        return returnJsonObject(request, AttackPathManagement.getAttackGraphTopologicalJson(monitoring));
     }
 
-    protected void prepareResponse(@Context HttpServletResponse servletResponse) {
-        servletResponse.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD");
-        servletResponse.addHeader("Access-Control-Allow-Credentials", "true");
-        servletResponse.addHeader("Access-Control-Allow-Origin", "http://localhost");
-        servletResponse.addHeader("Access-Control-Allow-Headers", "origin, content-type, accept, authorization, Content-Type, X-Requested-With");
-        servletResponse.addHeader("Access-Control-Max-Age", "1209600");
-    }
 }
