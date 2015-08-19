@@ -538,6 +538,15 @@ public class OperationalCostParameters {
         FileInputStream file = new FileInputStream(path);
         SAXBuilder sxb = new SAXBuilder();
         Document document = sxb.build(file);
+        loadFromDomDocument(document);
+    }
+
+    /**
+     * Load the Operational cost parameters from a XML DOM Document
+     *
+     * @param document the XML DOM document
+     */
+    public void loadFromDomDocument(Document document) {
         Element root = document.getRootElement();
 
         //remediationCost

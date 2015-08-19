@@ -335,6 +335,17 @@ Get the global remediation cost parameters.
     + Body
 
             {"global_parameters":{}}
+
+### Set global remediation cost parameters [POST /rest/json/configuration/remediation-cost-parameters/global]
+Set the global remediation cost parameters.
+
++ Request (application/json)
+
+        {"global_parameters":{"expensesForIT":15000}}
+
++ Response 200 (application/json)
+
+        {}
             
 ### Get snort rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/snort-rule]
 Get the operational cost parameters for a snort rule.
@@ -343,6 +354,17 @@ Get the operational cost parameters for a snort rule.
     + Body
 
             {"operational_cost_parameters":{}}
+
+### Set snort rule remediation cost parameters [POST /rest/json/configuration/remediation-cost-parameters/snort-rule]
+Set the operational cost parameters for a snort rule.
+
++ Request (application/json)
+
+        {"operational_cost_parameters":{"computationPowerCost":12,"skillRateMaintenance":1,"restartDuration":0.2,"usedStorage":1,"storageCost":5,"skillRateTests":0.7,"deploymentDuration":0.5,"businessApplicationsTestsDuration":4,"maintenanceDuration":10,"remediationCost":10,"remediationUninstallDuration":0.5,"usedPower":1,"serviceUnavailabilityDeploymentDuration":0,"skillRateDeployment":2,"workCost":20,"restartCost":0}}
+
++ Response 200 (application/json)
+
+        {}
             
 ### Get firewall rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/firewall-rule]
 Get the operational cost parameters for a firewall rule.
@@ -351,6 +373,17 @@ Get the operational cost parameters for a firewall rule.
     + Body
 
             {"operational_cost_parameters":{}}
+
+### Set firewall rule remediation cost parameters [POST /rest/json/configuration/remediation-cost-parameters/firewall-rule]
+Set the operational cost parameters for a firewall rule.
+
++ Request (application/json)
+
+        {"operational_cost_parameters":{"computationPowerCost":12,"skillRateMaintenance":1,"restartDuration":0.5,"usedStorage":0,"storageCost":10,"skillRateTests":1,"deploymentDuration":0.5,"businessApplicationsTestsDuration":6,"maintenanceDuration":0,"remediationCost":0,"remediationUninstallDuration":0.1,"usedPower":0.1,"serviceUnavailabilityDeploymentDuration":0,"skillRateDeployment":1.2,"workCost":20,"restartCost":10}}
+
++ Response 200 (application/json)
+
+        {}
             
 ### Get patch remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/patch]
 Get the operational cost parameters for a patch.
@@ -359,3 +392,14 @@ Get the operational cost parameters for a patch.
     + Body
 
             {"operational_cost_parameters":{}}
+
+### Set patch remediation cost parameters [POST /rest/json/configuration/remediation-cost-parameters/patch]
+Set the operational cost parameters for a patch.
+
++ Request (application/json)
+
+        {"operational_cost_parameters":{"computationPowerCost":5,"skillRateMaintenance":1,"restartDuration":0.5,"usedStorage":0,"storageCost":3,"skillRateTests":0.7,"deploymentDuration":3,"businessApplicationsTestsDuration":4,"maintenanceDuration":0.5,"remediationCost":5,"remediationUninstallDuration":1,"usedPower":0,"serviceUnavailabilityDeploymentDuration":0.5,"skillRateDeployment":1.5,"workCost":20,"restartCost":10}}
+
++ Response 200 (application/json)
+
+        {}
