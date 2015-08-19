@@ -21,6 +21,7 @@
 
 package org.fiware.cybercaptor.server.rest;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -37,5 +38,7 @@ public class RestApplication extends ResourceConfig {
      */
     public RestApplication() {
         packages("org.fiware.cybercaptor.server.rest");
+        packages("org.glassfish.jersey.examples.multipart");
+        register(MultiPartFeature.class);
     }
 }

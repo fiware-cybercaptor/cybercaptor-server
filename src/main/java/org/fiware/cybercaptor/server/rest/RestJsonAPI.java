@@ -20,6 +20,7 @@
  ****************************************************************************************/
 package org.fiware.cybercaptor.server.rest;
 
+import org.apache.commons.io.IOUtils;
 import org.fiware.cybercaptor.server.api.AttackPathManagement;
 import org.fiware.cybercaptor.server.api.InformationSystemManagement;
 import org.fiware.cybercaptor.server.attackgraph.AttackGraph;
@@ -31,6 +32,9 @@ import org.fiware.cybercaptor.server.informationsystem.InformationSystem;
 import org.fiware.cybercaptor.server.monitoring.Monitoring;
 import org.fiware.cybercaptor.server.properties.ProjectProperties;
 import org.fiware.cybercaptor.server.remediation.DeployableRemediation;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
@@ -43,6 +47,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,12 +173,12 @@ public class RestJsonAPI {
     @Path("/initialize")
     @Consumes(MediaType.APPLICATION_XML)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response initializeFromXMLFile(@Context HttpServletRequest request, String xmlString) throws Exception {
+    public Response initializeFromXMLText(@Context HttpServletRequest request, String xmlString) throws Exception {
         String costParametersFolderPath = ProjectProperties.getProperty("cost-parameters-path");
         String databasePath = ProjectProperties.getProperty("database-path");
 
         if (xmlString == null || xmlString.isEmpty())
-            return returnErrorMessage("The input file is empty.");
+            return returnErrorMessage("The input text string is empty.");
 
         Logger.getAnonymousLogger().log(Level.INFO, "Load the vulnerability and remediation database");
         Database database = new Database(databasePath);
@@ -217,6 +222,34 @@ public class RestJsonAPI {
         request.getSession(true).setAttribute("monitoring", monitoring);
 
         return returnJsonObject(new JSONObject().put("status", "Loaded"));
+    }
+
+    /**
+     * Generates the attack graph and initializes the main objects for other API calls
+     * (database, attack graph, attack paths,...).
+     * Load the objects from the XML file POST through a form describing the whole network topology
+     *
+     * @param request             the HTTP request
+     * @param uploadedInputStream
+     * @param fileDetail
+     * @return
+     * @throws Exception
+     */
+    @POST
+    @Path("/initialize")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response initializeFromXMLFile(@Context HttpServletRequest request,
+                                          @FormDataParam("file") InputStream uploadedInputStream,
+                                          @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                          @FormDataParam("file") FormDataBodyPart body) throws Exception {
+
+        if (!body.getMediaType().equals(MediaType.APPLICATION_XML_TYPE) && !body.getMediaType().equals(MediaType.TEXT_PLAIN)
+                && !body.getMediaType().equals(MediaType.TEXT_XML))
+            return returnErrorMessage("The file is not an XML file");
+        String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
+
+        return initializeFromXMLText(request, xmlFileString);
+
     }
 
     /**
