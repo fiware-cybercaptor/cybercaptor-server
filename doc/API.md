@@ -324,3 +324,38 @@ Simulate the remediation {id_remediation} of the path {id}, and compute the new 
     + Body
 
             {"attack_graph":{"arcs":{},"vertices":{}}
+            
+## Group Configuration [/rest/json/configuration]
+Calls related to the configuration (remediation cost parameters...).
+
+### Get global remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/global]
+Get the global remediation cost parameters.
+
++ Response 200 (application/json)
+    + Body
+
+            {"global_parameters":{}}
+            
+### Get snort rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/snort-rule]
+Get the operational cost parameters for a snort rule.
+
++ Response 200 (application/json)
+    + Body
+
+            {"operational_cost_parameters":{}}
+            
+### Get firewall rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/firewall-rule]
+Get the operational cost parameters for a firewall rule.
+
++ Response 200 (application/json)
+    + Body
+
+            {"operational_cost_parameters":{}}
+            
+### Get patch remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/patch]
+Get the operational cost parameters for a patch.
+
++ Response 200 (application/json)
+    + Body
+
+            {"operational_cost_parameters":{}}

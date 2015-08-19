@@ -40,6 +40,10 @@ import java.io.FileOutputStream;
 
 public class GlobalParameters {
     /**
+     * The global parameters file name
+     */
+    public final static String FILE_NAME = "global-parameters.xml";
+    /**
      * The expenses of the company for the IT
      */
     private double expensesForIT = 100;
@@ -51,18 +55,25 @@ public class GlobalParameters {
      * @throws Exception
      */
     public void saveToXMLFile(String path) throws Exception {
-        Element root = new Element("global_parameters");
-        Document document = new Document(root);
+        Document document = new Document(toDomElement());
+        //Save the DOM element in file
+        XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
+        output.output(document, new FileOutputStream(path));
+    }
 
-        //businessApplicationsTestsDuration
+    /**
+     * Get the dom element related to the global parameters
+     * @return the related XML DOM element
+     */
+    public Element toDomElement() {
+        Element root = new Element("global_parameters");
+
+        //expensesForIT
         Element expensesForITElement = new Element("expensesForIT");
         expensesForITElement.setText(expensesForIT + "");
         root.addContent(expensesForITElement);
 
-
-        //Save the DOM element in file
-        XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
-        output.output(document, new FileOutputStream(path));
+        return root;
     }
 
     /**

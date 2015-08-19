@@ -74,9 +74,9 @@ public class Monitoring {
      */
     public Monitoring(String pathToCostParametersFolder) throws Exception {
         this.setPathToCostParametersFolder(pathToCostParametersFolder);
-        File file = new File(pathToCostParametersFolder + "/global-parameters.xml");
+        File file = new File(pathToCostParametersFolder + "/" + GlobalParameters.FILE_NAME);
         if (file.exists())
-            getGlobalParameters().loadFromXMLFile(pathToCostParametersFolder + "/global-parameters.xml");
+            getGlobalParameters().loadFromXMLFile(pathToCostParametersFolder + "/" + GlobalParameters.FILE_NAME);
     }
 
     /**

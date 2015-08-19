@@ -72,19 +72,19 @@ public class RemediationAction {
     public RemediationAction(ActionType actionType, String costParametersFolder) throws Exception {
         this.setActionType(actionType);
         if (this.getActionType() == ActionType.APPLY_PATCH) {
-            File parametersFile = new File(costParametersFolder + "/patch.xml");
+            File parametersFile = new File(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_PATCH);
             if (parametersFile.exists()) {
-                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/patch.xml");
+                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_PATCH);
             }
         } else if (this.getActionType() == ActionType.DEPLOY_FIREWALL_RULE) {
-            File parametersFile = new File(costParametersFolder + "/firewall-rule.xml");
+            File parametersFile = new File(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_FIREWALL_RULE);
             if (parametersFile.exists()) {
-                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/firewall-rule.xml");
+                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_FIREWALL_RULE);
             }
         } else if (this.getActionType() == ActionType.DEPLOY_SNORT_RULE) {
-            File parametersFile = new File(costParametersFolder + "/snort-rules.xml");
+            File parametersFile = new File(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_SNORT_RULE);
             if (parametersFile.exists()) {
-                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/snort-rules.xml");
+                getOperationalCostParameters().loadFromXMLFile(costParametersFolder + "/" + OperationalCostParameters.FILE_NAME_SNORT_RULE);
             }
         }
     }

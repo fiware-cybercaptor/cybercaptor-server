@@ -39,6 +39,21 @@ import java.io.FileOutputStream;
  */
 public class OperationalCostParameters {
     /**
+     * The file name of the snort rule parameters.
+     */
+    public final static String FILE_NAME_SNORT_RULE = "snort-rules.xml";
+
+    /**
+     * The file name of the firewall rule parameters.
+     */
+    public final static String FILE_NAME_FIREWALL_RULE = "firewall-rule.xml";
+
+    /**
+     * The file name of the patch parameters.
+     */
+    public final static String FILE_NAME_PATCH = "patch.xml";
+
+    /**
      * The average cost of the remediation
      */
     private double remediationCost = 0;
@@ -414,8 +429,20 @@ public class OperationalCostParameters {
      * @throws Exception the exception
      */
     public void saveToXMLFile(String path) throws Exception {
-        Element root = new Element("operational_costs_parameters");
-        Document document = new Document(root);
+        Document document = new Document(toDomElement());
+
+        //Save the DOM element in file
+        XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
+        output.output(document, new FileOutputStream(path));
+    }
+
+    /**
+     * Function used to save the parameters in DOM Element
+     *
+     * @return the related DOM element
+     */
+    public Element toDomElement() {
+        Element root = new Element("operational_cost_parameters");
 
         //businessApplicationsTestsDuration
         Element businessApplicationsTestsDurationElement = new Element("businessApplicationsTestsDuration");
@@ -498,9 +525,7 @@ public class OperationalCostParameters {
         skillRateMaintenanceElement.setText(getSkillRateMaintenance() + "");
         root.addContent(skillRateMaintenanceElement);
 
-        //Save the DOM element in file
-        XMLOutputter output = new XMLOutputter(Format.getPrettyFormat());
-        output.output(document, new FileOutputStream(path));
+        return root;
     }
 
     /**
