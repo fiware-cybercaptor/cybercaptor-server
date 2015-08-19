@@ -230,9 +230,10 @@ public class RestJsonAPI {
      * Load the objects from the XML file POST through a form describing the whole network topology
      *
      * @param request             the HTTP request
-     * @param uploadedInputStream
-     * @param fileDetail
-     * @return
+     * @param uploadedInputStream The input stream of the XML file
+     * @param fileDetail          The file detail object
+     * @param body                The body object relative to the XML file
+     * @return the HTTP response
      * @throws Exception
      */
     @POST
@@ -243,8 +244,8 @@ public class RestJsonAPI {
                                           @FormDataParam("file") FormDataContentDisposition fileDetail,
                                           @FormDataParam("file") FormDataBodyPart body) throws Exception {
 
-        if (!body.getMediaType().equals(MediaType.APPLICATION_XML_TYPE) && !body.getMediaType().equals(MediaType.TEXT_PLAIN)
-                && !body.getMediaType().equals(MediaType.TEXT_XML))
+        if (!body.getMediaType().equals(MediaType.APPLICATION_XML_TYPE) && !body.getMediaType().equals(MediaType.TEXT_XML_TYPE)
+                && !body.getMediaType().equals(MediaType.TEXT_PLAIN_TYPE))
             return returnErrorMessage(request, "The file is not an XML file");
         String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
 
