@@ -52,6 +52,6 @@ public class RestAPIVersion {
 	@Path("/detailed")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDetailedVersion(HttpServletRequest request) {
-        return RestJsonAPI.returnJsonObject(request, new JSONObject().put("version", version));
+        return RestApplication.returnJsonObject(request, new JSONObject().put("version", version));
     }
 }
