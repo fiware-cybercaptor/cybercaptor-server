@@ -116,6 +116,14 @@ public class DeployableRemediation {
     public void setCost(double cost) {
         this.cost = cost;
     }
+
+    /**
+     * Validate that this remediation has been applied to be taken into account
+     * in the remediation automation.
+     */
+    public void validate() {
+        //TODO; "validate" this remediation
+    }
 }
 
 

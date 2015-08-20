@@ -324,6 +324,21 @@ Simulate the remediation {id_remediation} of the path {id}, and compute the new 
     + Body
 
             {"attack_graph":{"arcs":{},"vertices":{}}
+
+### Validate the remediation to an attack path [GET /rest/json/attack_path/{id}/remediation/{id_remediation}/validate]
+Validate that the remediation {id_remediation} of the path {id} as been applied
+
++ Parameters
+    + id: 0 (number, required) - The number of the attack path for which remediations will be calculated
+    + id_remediation: 0 (number, required) - The number of the remediation to validate.
+
++ Response 200 (application/json)
+    + Attributes (object)
+        + id: 0
+        + id_remediation: 0
+    + Body
+
+            {"success":"The remediation has been validated."}
             
 ## Group Configuration [/rest/json/configuration]
 Calls related to the configuration (remediation cost parameters...).

@@ -501,6 +501,56 @@ public class RestJsonAPI {
     }
 
     /**
+     * Validate that the remediation id_remediation of the path id has been applied
+     *
+     * @param request        the HTTP Request
+     * @param id             the identifier of the attack path for which the remediations have been computed
+     * @param id_remediation the identifier of the remediation to validate
+     * @return the HTTP Response
+     */
+    @GET
+    @Path("attack_path/{id}/remediation/{id-remediation}/validate")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response validateRemediationInAttackGraph(@Context HttpServletRequest request, @PathParam("id") int id, @PathParam("id-remediation") int id_remediation) throws Exception {
+        Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
+        Database db = ((Database) request.getSession(true).getAttribute("database"));
+
+        if (monitoring == null) {
+            return RestApplication.returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
+                    "initialize it ?");
+        }
+
+        if (db == null) {
+            return RestApplication.returnErrorMessage(request, "The database object is empty. Did you forget to " +
+                    "initialize it ?");
+        }
+
+        int numberAttackPaths = monitoring.getAttackPathList().size();
+
+        if (id >= numberAttackPaths) {
+            return RestApplication.returnErrorMessage(request, "The attack path " + id + " does not exist. There are only" +
+                    numberAttackPaths + " attack paths (0 to " +
+                    (numberAttackPaths - 1) + ")");
+        }
+
+        List<DeployableRemediation> remediations = monitoring.getAttackPathList().get(id).getDeployableRemediations(monitoring.getInformationSystem(), db.getConn(), monitoring.getPathToCostParametersFolder());
+
+        int numberRemediations = remediations.size();
+
+        if (id_remediation >= numberRemediations) {
+            return RestApplication.returnErrorMessage(request, "The remediation " + id_remediation + " does not exist. There are only" +
+                    numberRemediations + " remediations (0 to " +
+                    (numberRemediations - 1) + ")");
+        }
+        DeployableRemediation deployableRemediation = remediations.get(id_remediation);
+
+        deployableRemediation.validate();
+
+        return RestApplication.returnSuccessMessage(request, "The remediation has been validated.");
+
+    }
+
+    /**
      * Get the whole attack graph
      *
      * @param request the HTTP Request

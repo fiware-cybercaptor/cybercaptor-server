@@ -77,4 +77,18 @@ public class RestApplication extends ResourceConfig {
 
         return returnJsonObject(request, jsonObject);
     }
+
+    /**
+     * Returns a success message, in a {@link org.json.JSONObject} ({success:"the success message"}
+     *
+     * @param successMessage the sucess message to return
+     * @return the {@link javax.ws.rs.core.Response} to this {@link org.json.JSONObject}
+     */
+    public static Response returnSuccessMessage(HttpServletRequest request, String successMessage) {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", successMessage);
+
+        return returnJsonObject(request, jsonObject);
+    }
 }
