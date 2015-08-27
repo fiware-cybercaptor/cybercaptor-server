@@ -142,4 +142,9 @@ public class DeployableRemediationAction {
     public void setRemediationAction(RemediationAction remediationAction) {
         this.remediationAction = remediationAction;
     }
+
+    @Override
+    public String toString() {
+        return getRemediationAction().getActionType() + " on " + getHost();
+    }
 }

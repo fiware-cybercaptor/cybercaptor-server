@@ -20,10 +20,19 @@
  ****************************************************************************************/
 package org.fiware.cybercaptor.server.remediation;
 
+import org.fiware.cybercaptor.server.attackgraph.AttackPath;
+import org.fiware.cybercaptor.server.attackgraph.serializable.SerializableAttackPath;
+import org.fiware.cybercaptor.server.informationsystem.InformationSystem;
+import org.fiware.cybercaptor.server.properties.ProjectProperties;
+import org.fiware.cybercaptor.server.remediation.serializable.SerializableDeployableRemediation;
 import org.jdom2.Element;
 
+import java.io.*;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class representing a deployable remediation = a list of {@link DeployableRemediationAction}
@@ -121,8 +130,34 @@ public class DeployableRemediation {
      * Validate that this remediation has been applied to be taken into account
      * in the remediation automation.
      */
-    public void validate() {
-        //TODO; "validate" this remediation
+    public void validate(AttackPath correctedAttackPath, InformationSystem informationSystem) throws Exception {
+        Logger.getAnonymousLogger().log(Level.INFO, this.actions.toString() + " has been validated to correct the path.");
+        String remediationsHistoryPath = ProjectProperties.getProperty("remediations-history-path");
+        if (remediationsHistoryPath == null || remediationsHistoryPath.isEmpty()) {
+            Logger.getAnonymousLogger().log(Level.WARNING, "The remediations-history-path has not been set" +
+                    ", the remediation history will not be kept.");
+            return;
+        }
+
+        //Load the remediations history
+        File remediationsHistoryFile = new File(remediationsHistoryPath);
+        List<AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>> attackPathsRemediations;
+        if (remediationsHistoryFile.exists()) {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(remediationsHistoryPath));
+            attackPathsRemediations = (List<AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>>) ois.readObject();
+        } else {
+            attackPathsRemediations = new ArrayList<AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>>();
+        }
+        Logger.getAnonymousLogger().log(Level.INFO, attackPathsRemediations.size() + " remediated paths in the history file.");
+
+        //Add the current remediation + attack path to the history
+        SerializableAttackPath serializableAttackPath = new SerializableAttackPath(correctedAttackPath, informationSystem);
+        SerializableDeployableRemediation serializableRemediation = new SerializableDeployableRemediation(this);
+        attackPathsRemediations.add(new AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>(serializableAttackPath, serializableRemediation));
+
+        //Save to the remediations history file
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(remediationsHistoryFile));
+        oos.writeObject(attackPathsRemediations);
     }
 }
 

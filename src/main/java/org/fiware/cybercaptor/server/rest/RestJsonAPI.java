@@ -511,7 +511,7 @@ public class RestJsonAPI {
     @GET
     @Path("attack_path/{id}/remediation/{id-remediation}/validate")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response validateRemediationInAttackGraph(@Context HttpServletRequest request, @PathParam("id") int id, @PathParam("id-remediation") int id_remediation) throws Exception {
+    public Response validateRemediationInAttackGraph(@Context HttpServletRequest request, @PathParam("id") int id, @PathParam("id-remediation") int id_remediation) {
         Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
         Database db = ((Database) request.getSession(true).getAttribute("database"));
 
@@ -533,7 +533,12 @@ public class RestJsonAPI {
                     (numberAttackPaths - 1) + ")");
         }
 
-        List<DeployableRemediation> remediations = monitoring.getAttackPathList().get(id).getDeployableRemediations(monitoring.getInformationSystem(), db.getConn(), monitoring.getPathToCostParametersFolder());
+        List<DeployableRemediation> remediations;
+        try {
+            remediations = monitoring.getAttackPathList().get(id).getDeployableRemediations(monitoring.getInformationSystem(), db.getConn(), monitoring.getPathToCostParametersFolder());
+        } catch (Exception e) {
+            return RestApplication.returnErrorMessage(request, "Error during the computation of the remediations:" + e.getMessage());
+        }
 
         int numberRemediations = remediations.size();
 
@@ -544,7 +549,11 @@ public class RestJsonAPI {
         }
         DeployableRemediation deployableRemediation = remediations.get(id_remediation);
 
-        deployableRemediation.validate();
+        try {
+            deployableRemediation.validate(monitoring.getAttackPathList().get(id), monitoring.getInformationSystem());
+        } catch (Exception e) {
+            return RestApplication.returnErrorMessage(request, "Error during the validation of the remediations:" + e.getMessage());
+        }
 
         return RestApplication.returnSuccessMessage(request, "The remediation has been validated.");
 
