@@ -121,4 +121,21 @@ public class SerializableDeployableRemediationAction implements Serializable {
     public String getHost() {
         return host;
     }
+
+    /**
+     * Test if a serializable remediation action is equals to a serializable deployable remediation
+     *
+     * @param deployableRemediationAction a deployable remediation action
+     * @return true if the remediations are equals
+     */
+    public boolean equals(DeployableRemediationAction deployableRemediationAction) {
+        SerializableDeployableRemediationAction serializableDeployableRemediation = new SerializableDeployableRemediationAction(deployableRemediationAction);
+        boolean result = true;
+
+        result &= serializableDeployableRemediation.getRemediationActionType().equals(this.getRemediationActionType());
+        result &= serializableDeployableRemediation.getRemediationAction().equals(this.getRemediationAction());
+        result &= serializableDeployableRemediation.getHost().equals(this.getHost());
+
+        return result;
+    }
 }

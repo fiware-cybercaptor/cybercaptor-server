@@ -53,4 +53,22 @@ public class SerializableDeployableRemediation implements Serializable {
     public List<SerializableDeployableRemediationAction> getActions() {
         return actions;
     }
+
+    /**
+     * Test if a deployable remediation is similar to a serializable one
+     * @param deployableRemediation the remediation to test
+     * @return true if they are similar
+     */
+    public boolean isSimilarTo(DeployableRemediation deployableRemediation) {
+        boolean result = true;
+        for(DeployableRemediationAction deployableRemediationAction : deployableRemediation.getActions()) {
+            boolean resultForAction = false;
+            for(SerializableDeployableRemediationAction serializableDeployableRemediation : this.getActions()) {
+                resultForAction |= serializableDeployableRemediation.equals(deployableRemediationAction);
+            }
+            result &= resultForAction;
+        }
+
+        return result;
+    }
 }

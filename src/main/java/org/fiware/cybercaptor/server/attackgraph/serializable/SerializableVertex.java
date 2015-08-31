@@ -141,4 +141,19 @@ public class SerializableVertex implements Serializable {
     public boolean isTarget() {
         return target;
     }
+
+    /**
+     * Test if equals to another serializable vertex
+     * @param vertex the vertex to test
+     * @return true if the vertices are equals
+     */
+    public boolean equals(SerializableVertex vertex) {
+        boolean result = (this.isCompromised() == vertex.isCompromised());
+        result &= (this.isTarget() == vertex.isTarget());
+        result &= (this.isMachineOfAttacker() == vertex.isMachineOfAttacker());
+        result &= (this.getType() == vertex.getType());
+        result &= (this.getNetwork().equals(vertex.getNetwork()));
+        result &= (this.getMachine().equals(vertex.getMachine()));
+        return result;
+    }
 }

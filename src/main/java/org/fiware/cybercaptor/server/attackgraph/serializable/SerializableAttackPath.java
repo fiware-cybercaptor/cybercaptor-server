@@ -78,4 +78,22 @@ public class SerializableAttackPath implements Serializable {
         }
 
     }
+
+    /**
+     * Test if an attack path is similar to another attack path
+     *
+     * @param attackPath the attack path to test
+     * @return true if the attack paths are similar.
+     */
+    public boolean isSimilarTo(SerializableAttackPath attackPath) {
+        boolean result = true;
+        for (SerializableVertex serializableVertex : attackPath.vertices.values()) {
+            boolean resultVertex = false;
+            for (SerializableVertex vertexToTest : this.vertices.values()) {
+                resultVertex |= vertexToTest.equals(serializableVertex);
+            }
+            result &= resultVertex;
+        }
+        return result;
+    }
 }

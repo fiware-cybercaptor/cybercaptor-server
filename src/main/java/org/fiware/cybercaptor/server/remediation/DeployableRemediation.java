@@ -52,6 +52,27 @@ public class DeployableRemediation {
     private double cost = 0;
 
     /**
+     * The corrected attack path
+     */
+    private AttackPath correctedPath;
+
+    /**
+     * The information system
+     */
+    private InformationSystem informationSystem;
+
+    /**
+     * Create a deployable remediation with the attack path it is correcting
+     *
+     * @param correctedPath the corrected attack path.
+     */
+
+    public DeployableRemediation(AttackPath correctedPath, InformationSystem informationSystem) {
+        this.correctedPath = correctedPath;
+        this.informationSystem = informationSystem;
+    }
+
+    /**
      * Compute the cost of the deployable list of remediations
      *
      * @return the cost of this deployable remediation
@@ -78,6 +99,10 @@ public class DeployableRemediation {
         costElement.setText(this.getCost() + "");
         root.addContent(costElement);
 
+        Element habitIndexElement = new Element("habit-index");
+        habitIndexElement.setText(this.getHabitIndex() + "");
+        root.addContent(habitIndexElement);
+
         //actions
         Element actionsElement = new Element("remediation_actions");
         root.addContent(actionsElement);
@@ -88,6 +113,40 @@ public class DeployableRemediation {
         }
 
         return root;
+    }
+
+    private double getHabitIndex() {
+        Logger.getAnonymousLogger().log(Level.INFO, this.actions.toString() + " has been validated to correct the path.");
+        String remediationsHistoryPath = ProjectProperties.getProperty("remediations-history-path");
+        if (remediationsHistoryPath == null || remediationsHistoryPath.isEmpty()) {
+            Logger.getAnonymousLogger().log(Level.WARNING, "The remediations-history-path has not been set" +
+                    ", the remediation history will not be kept.");
+            return 0;
+        }
+        double habitIndex = 0;
+
+        //Load the remediations history
+        File remediationsHistoryFile = new File(remediationsHistoryPath);
+        List<AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>> attackPathsRemediations;
+        if (remediationsHistoryFile.exists()) {
+            ObjectInputStream ois;
+            try {
+                ois = new ObjectInputStream(new FileInputStream(remediationsHistoryPath));
+                attackPathsRemediations = (List<AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>>) ois.readObject();
+                for (AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation> attackPathRemediation : attackPathsRemediations) {
+                    SerializableAttackPath serializableAttackPath = attackPathRemediation.getKey();
+                    SerializableDeployableRemediation serializableRemediation = attackPathRemediation.getValue();
+                    if (serializableAttackPath.isSimilarTo(new SerializableAttackPath(correctedPath, informationSystem)) && serializableRemediation.isSimilarTo(this))
+                        habitIndex++;
+                }
+                return habitIndex;
+            } catch (Exception e) {
+                Logger.getAnonymousLogger().log(Level.WARNING, "Error while loading the remediation history: " + e.getMessage());
+            }
+        } else {
+            return 0;
+        }
+        return 0;
     }
 
     /**
@@ -130,7 +189,7 @@ public class DeployableRemediation {
      * Validate that this remediation has been applied to be taken into account
      * in the remediation automation.
      */
-    public void validate(AttackPath correctedAttackPath, InformationSystem informationSystem) throws Exception {
+    public void validate(InformationSystem informationSystem) throws Exception {
         Logger.getAnonymousLogger().log(Level.INFO, this.actions.toString() + " has been validated to correct the path.");
         String remediationsHistoryPath = ProjectProperties.getProperty("remediations-history-path");
         if (remediationsHistoryPath == null || remediationsHistoryPath.isEmpty()) {
@@ -151,7 +210,7 @@ public class DeployableRemediation {
         Logger.getAnonymousLogger().log(Level.INFO, attackPathsRemediations.size() + " remediated paths in the history file.");
 
         //Add the current remediation + attack path to the history
-        SerializableAttackPath serializableAttackPath = new SerializableAttackPath(correctedAttackPath, informationSystem);
+        SerializableAttackPath serializableAttackPath = new SerializableAttackPath(this.correctedPath, informationSystem);
         SerializableDeployableRemediation serializableRemediation = new SerializableDeployableRemediation(this);
         attackPathsRemediations.add(new AbstractMap.SimpleEntry<SerializableAttackPath, SerializableDeployableRemediation>(serializableAttackPath, serializableRemediation));
 

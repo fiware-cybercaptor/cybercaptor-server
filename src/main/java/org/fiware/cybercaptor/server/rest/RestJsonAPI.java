@@ -550,7 +550,7 @@ public class RestJsonAPI {
         DeployableRemediation deployableRemediation = remediations.get(id_remediation);
 
         try {
-            deployableRemediation.validate(monitoring.getAttackPathList().get(id), monitoring.getInformationSystem());
+            deployableRemediation.validate(monitoring.getInformationSystem());
         } catch (Exception e) {
             return RestApplication.returnErrorMessage(request, "Error during the validation of the remediations:" + e.getMessage());
         }

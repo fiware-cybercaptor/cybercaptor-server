@@ -402,7 +402,7 @@ public class AttackPath extends MulvalAttackGraph implements Cloneable {
         //For all "OR" remediations
         for (List<RemediationAction> remediationAction1 : remediationActions) {
             List<DeployableRemediation> result_tmp = new ArrayList<DeployableRemediation>(); //Result for only this group of remediations
-            DeployableRemediation dr = new DeployableRemediation();
+            DeployableRemediation dr = new DeployableRemediation(this, topology);
             dr.setActions(new ArrayList<DeployableRemediationAction>());
             result_tmp.add(dr);
 
@@ -414,7 +414,7 @@ public class AttackPath extends MulvalAttackGraph implements Cloneable {
                     for (int m = 1; m < remediationAction.getPossibleMachines().size(); m++) {
                         //For all the previously added Deployable Remediation Actions
                         for (DeployableRemediation aResult_tmp : result_tmp) {
-                            DeployableRemediation newdr = new DeployableRemediation();
+                            DeployableRemediation newdr = new DeployableRemediation(this, topology);
                             resultForThisRemediationAction.add(newdr);
                             newdr.getActions().addAll(aResult_tmp.getActions());
                             DeployableRemediationAction deployableRemediationAction = new DeployableRemediationAction();
