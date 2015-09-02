@@ -34,7 +34,7 @@ Build Status: [![Build Status](https://travis-ci.org/fiware-cybercaptor/cybercap
 ## Development Version Installation
 
 ### Prerequisite
-- Ubuntu 
+- Ubuntu
 - Java 1.7
 - Apache Tomcat 7
 - Apache Maven 3
@@ -46,7 +46,7 @@ Build Status: [![Build Status](https://travis-ci.org/fiware-cybercaptor/cybercap
 1) Get sources from Github
 ```
 git clone https://github.com/fiware-cybercaptor/cybercaptor-server.git
-cd cybercaptor-server 
+cd cybercaptor-server
 ```
 
 2) Use Maven to download dependencies and build the web application archive (.war).
@@ -84,7 +84,7 @@ vim ./configuration-files/config.properties
 
 ```
 
-### Test 
+### Test
 
 Go on URL : http://localhost:8080/cybercaptor-server/rest/json/initialize
 
@@ -118,7 +118,7 @@ More details about building and/or running the Docker container can be found in 
 
 ## Debugging
 
-### Main logs files 
+### Main logs files
 - ``` /var/log/tomcat7/catalina.out ```
 - ``` `pwd`/configuration-files/tmp/xsb_log.txt ```
 - ``` `pwd`/configuration-files/tmp/input-generation.log ```
@@ -143,8 +143,8 @@ which should returns something like
 
 #### Initialization calls
 
-Before using the API to manipulate the attack graph, the attack paths, and the remediations, 
-the first call that needs to be done is 
+Before using the API to manipulate the attack graph, the attack paths, and the remediations,
+the first call that needs to be done is
 
 ```
 curl -c /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/initialize
@@ -206,7 +206,7 @@ Get the XML network topology (useful for backups):
 curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/topology
 ```
 
-The full list of API calls and specifications can be found in [doc/API.md](doc/API.md) using the [API blueprint](https://apiblueprint.org/) syntax.
+The full list of API calls and specifications is stored in [apiary.apib](apiary.apib) and can be visualized on [Apiary.io](http://docs.cybercaptor.apiary.io/#) using the [Apiary Blueprint format](https://apiblueprint.org/).
 
 ## Developers
 
@@ -214,13 +214,13 @@ The full list of API calls and specifications can be found in [doc/API.md](doc/A
 
 The Javadoc can be found on [github pages](https://fiware-cybercaptor.github.io/cybercaptor-server/apidocs/index.html)
 
-It can be updated with Maven using 
+It can be updated with Maven using
 
 ```
  mvn site-deploy
 ```
 
-Don't forget to configure GitHub OAuth token in `~/.m2/settings.xml`. 
+Don't forget to configure GitHub OAuth token in `~/.m2/settings.xml`.
 Tokens can be generated on https://github.com/settings/tokens, with repo and user:email authorized scopes.
 
 ```
