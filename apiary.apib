@@ -9,7 +9,7 @@ This is the specification of the REST API of **CyberCAPTOR server**.
 # Group REST API without inititialization
 This group of REST calls contains the API calls that **do not need** the `/initialize` call that loads the vulnerability and remediation database and generates the attack graph and the attack paths.
 
-## Group Version
+## Group Version [/rest/version]
 Get REST API version information. Generally useful to test that the installation is working.
 
 ### Version [GET /rest/version]
@@ -289,7 +289,7 @@ Get the XML topology for backup
 
 
 
-## Group Host with init [/rest/json/host/list]
+## Group Hosts [/rest/json/host/list]
 This group contains the calls related to hosts, after initialization.
 
 ### Get the host list [GET]
@@ -310,7 +310,7 @@ Set the hosts and their security_requirements.
 
         {}
         
-## Group Attack graph with init [/rest/json/attack_graph]
+## Group Attack graphs [/rest/json/attack_graph]
 This group contains the calls related to the attack graph, after initialization.
 
 ### Get the attack graph [GET]
@@ -334,7 +334,7 @@ Get the attack graph in its topological form.
 
         {"arcs":{}, "vertices":{}}
         
-## Group Attack path with init [/rest/json/attack_path]
+## Group Attack paths [/rest/json/attack_path]
 This group contains the calls related to the attack paths, after initialization.
 
 ### Get the attack paths list [GET /rest/json/attack_path/list]
