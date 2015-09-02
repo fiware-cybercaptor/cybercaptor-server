@@ -99,7 +99,7 @@ public class DeployableRemediation {
         costElement.setText(this.getCost() + "");
         root.addContent(costElement);
 
-        Element habitIndexElement = new Element("habit-index");
+        Element habitIndexElement = new Element("habit_index");
         habitIndexElement.setText(this.getHabitIndex() + "");
         root.addContent(habitIndexElement);
 
