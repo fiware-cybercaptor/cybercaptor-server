@@ -32,7 +32,7 @@ import java.util.*;
  * Class that represents an Alert (can be loaded from an idmef:Alert DOM object).
  * cf. https://www.ietf.org/rfc/rfc4765.txt
  *
- * @author Francois-Xavier Aguessy
+ * @author Francois -Xavier Aguessy
  */
 public class Alert implements Serializable {
 
@@ -41,9 +41,9 @@ public class Alert implements Serializable {
      */
     private final List<String> sources = new ArrayList<String>();
     /**
-     * The list of destinations for this alert
+     * The list of targets for this alert
      */
-    private final List<String> destinations = new ArrayList<String>();
+    private final List<String> targets = new ArrayList<String>();
     /**
      * The CVEs and their links, related to this alert
      */
@@ -116,14 +116,14 @@ public class Alert implements Serializable {
                     Element targetIP = targetAddress.getChild("address", idmefNamespace);
                     Element targetMask = targetAddress.getChild("netmask", idmefNamespace);
                     if (targetIP != null && targetMask != null) {
-                        this.sources.add(targetIP.getText() + "/" + targetMask);
+                        this.targets.add(targetIP.getText() + "/" + targetMask);
                     } else if (targetIP != null) {
-                        this.sources.add(targetIP.getText());
+                        this.targets.add(targetIP.getText());
                     }
                 } else { // There is no address, their must be a "name"
                     Element targetName = targetNode.getChild("name", idmefNamespace);
                     if (targetName != null) {
-                        this.sources.add(targetName.getText());
+                        this.targets.add(targetName.getText());
                     }
                 }
             }
@@ -141,5 +141,68 @@ public class Alert implements Serializable {
                 }
             }
         }
+    }
+
+    /**
+     * Gets sources.
+     *
+     * @return the sources
+     */
+    public List<String> getSources() {
+        return sources;
+    }
+
+    /**
+     * Gets targets.
+     *
+     * @return the targets
+     */
+    public List<String> getTargets() {
+        return targets;
+    }
+
+    /**
+     * Gets cve links.
+     *
+     * @return the cve links
+     */
+    public Map<String, String> getCveLinks() {
+        return cveLinks;
+    }
+
+    /**
+     * Gets timestamp.
+     *
+     * @return the timestamp
+     */
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    /**
+     * Is sent.
+     *
+     * @return the boolean
+     */
+    public boolean isSent() {
+        return sent;
+    }
+
+    /**
+     * Sets sent.
+     *
+     * @param sent the sent
+     */
+    public void setSent(boolean sent) {
+        this.sent = sent;
+    }
+
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
     }
 }

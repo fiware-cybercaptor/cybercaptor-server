@@ -47,6 +47,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -646,13 +647,8 @@ public class RestJsonAPI {
                 && !body.getMediaType().equals(MediaType.TEXT_PLAIN_TYPE))
             return RestApplication.returnErrorMessage(request, "The file is not an XML file");
 
-        try {
-            String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
-            return addIDMEFAlertsFromXMLText(request, xmlFileString);
-
-        } catch (Exception e) {
-            return RestApplication.returnErrorMessage(request, "Problem while parsing the XML file: " + e.getMessage());
-        }
+        String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
+        return addIDMEFAlertsFromXMLText(request, xmlFileString);
     }
 
     /**
@@ -673,5 +669,25 @@ public class RestJsonAPI {
 
         IDMEFManagement.loadIDMEFAlertsFromXML(xmlString);
         return RestApplication.returnSuccessMessage(request, "IDMEF alerts added successfully");
+    }
+
+    /**
+     * Get alerts in JSON format and set them as "sent" into a local queue file.
+     *
+     * @param request the HTTP Request
+     * @return the HTTP Response
+     */
+    @GET
+    @Path("/idmef/alerts")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAlerts(@Context HttpServletRequest request) throws IOException, ClassNotFoundException {
+        Monitoring monitoring = ((Monitoring) request.getSession(true).getAttribute("monitoring"));
+
+        if (monitoring == null) {
+            return RestApplication.returnErrorMessage(request, "The monitoring object is empty. Did you forget to " +
+                    "initialize it ?");
+        }
+
+        return RestApplication.returnJsonObject(request, IDMEFManagement.getAlerts(monitoring.getInformationSystem()));
     }
 }
