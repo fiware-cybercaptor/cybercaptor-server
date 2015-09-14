@@ -21,6 +21,7 @@
 package org.fiware.cybercaptor.server.informationsystem.graph;
 
 import org.fiware.cybercaptor.server.informationsystem.InformationSystemHost;
+import org.fiware.cybercaptor.server.topology.asset.component.Interface;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -110,8 +111,14 @@ public class InformationSystemGraph {
             vertex_object.put("type", topologicalVertex.getType().toString().toUpperCase());
             if (topologicalVertex.getType().equals(InformationSystemGraphVertex.TopologyVertexType.Machine)) {
                 vertex_object.put("name", topologicalVertex.getMachine().getName());
+                JSONArray ipAddresses = new JSONArray();
+                for (Interface networkInterface : topologicalVertex.getMachine().getInterfaces().values()) {
+                    ipAddresses.put(networkInterface.getAddress());
+                }
+                vertex_object.put("ip_addresses", ipAddresses);
             } else if (topologicalVertex.getType().equals(InformationSystemGraphVertex.TopologyVertexType.Network)) {
                 vertex_object.put("name", topologicalVertex.getNetwork().getName());
+                vertex_object.put("ip_address", topologicalVertex.getNetwork().getAddress() + "/" + topologicalVertex.getNetwork().getMask());
             }
             vertex_object.put("compromised", topologicalVertex.isCompromised());
             vertex_object.put("source_of_attack", topologicalVertex.isMachineOfAttacker());
