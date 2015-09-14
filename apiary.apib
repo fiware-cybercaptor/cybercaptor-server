@@ -105,7 +105,62 @@ Set the operational cost parameters for a patch.
 + Response 200 (application/json)
 
         {}
-            
+
+## Group IDMEF
+REST API calls related to IDMEF alerts. See https://www.ietf.org/rfc/rfc4765.txt for more IDMEF alerts information.
+
+### Add IDMEF alerts [POST /rest/json/idmef/add]
+From an XML IDMEF file containing alerts.
+
++ Request (application/xml)
+
+        <?xml version="1.0" encoding="UTF-8"?>
+        <idmef:IDMEF-Message xmlns:idmef="http://iana.org/idmef" version="1.0">
+          <idmef:Alert messageid="abc123456789">
+            <idmef:Analyzer analyzerid="bc-sensor01">
+              <idmef:Node category="dns">
+                <idmef:name>sensor.example.com</idmef:name>
+              </idmef:Node>
+            </idmef:Analyzer>
+            <idmef:CreateTime ntpstamp="0xbc71f4f5.0xef449129">2000-03-09T10:01:25.93464Z</idmef:CreateTime>
+            <idmef:Source ident="a1a2" spoofed="yes">
+              <idmef:Node ident="a1a2-1">
+                <idmef:Address ident="a1a2-2" category="ipv4-addr">
+                  <idmef:address>192.0.2.200</idmef:address>
+                </idmef:Address>
+              </idmef:Node>
+            </idmef:Source>
+            <idmef:Target ident="b3b4">
+              <idmef:Node>
+                <idmef:Address ident="b3b4-1" category="ipv4-addr">
+                  <idmef:address>192.0.2.50</idmef:address>
+                </idmef:Address>
+              </idmef:Node>
+            </idmef:Target>
+            <idmef:Target ident="c5c6">
+              <idmef:Node ident="c5c6-1" category="nisplus">
+                <idmef:name>lollipop</idmef:name>
+              </idmef:Node>
+            </idmef:Target>
+            <idmef:Target ident="d7d8">
+              <idmef:Node ident="d7d8-1">
+                <idmef:location>Cabinet B10</idmef:location>
+                <idmef:name>Cisco.router.b10</idmef:name>
+              </idmef:Node>
+            </idmef:Target>
+            <idmef:Classification text="Ping-of-death detected">
+              <idmef:Reference origin="cve">
+                <idmef:name>CVE-1999-128</idmef:name>
+                <idmef:url>http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-1999-128</idmef:url>
+              </idmef:Reference>
+            </idmef:Classification>
+          </idmef:Alert>
+        </idmef:IDMEF-Message>
+
++ Response 200 (application/json)
+
+        {"success":"IDMEF alerts added successfully"}
+
 # Group REST API after initialization
 This group contains thte API calls **after** the `/initialize` call that loads the vulnerability and remediation database and generates the attack graph and the attack paths.
 

@@ -22,6 +22,7 @@ package org.fiware.cybercaptor.server.rest;
 
 import org.apache.commons.io.IOUtils;
 import org.fiware.cybercaptor.server.api.AttackPathManagement;
+import org.fiware.cybercaptor.server.api.IDMEFManagement;
 import org.fiware.cybercaptor.server.api.InformationSystemManagement;
 import org.fiware.cybercaptor.server.attackgraph.AttackGraph;
 import org.fiware.cybercaptor.server.attackgraph.AttackPath;
@@ -621,4 +622,56 @@ public class RestJsonAPI {
         return RestApplication.returnJsonObject(request, AttackPathManagement.getAttackGraphTopologicalJson(monitoring));
     }
 
+
+    /**
+     * Receive alerts in IDMEF format and add them into a local queue file,
+     * before releasing them when the client requests it.
+     *
+     * @param request             the HTTP request
+     * @param uploadedInputStream The input stream of the IDMEF XML file
+     * @param fileDetail          The file detail object
+     * @param body                The body object relative to the XML file
+     * @return the HTTP response
+     * @throws Exception
+     */
+    @POST
+    @Path("/idmef/add")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response addIDMEFAlerts(@Context HttpServletRequest request,
+                                   @FormDataParam("file") InputStream uploadedInputStream,
+                                   @FormDataParam("file") FormDataContentDisposition fileDetail,
+                                   @FormDataParam("file") FormDataBodyPart body) throws Exception {
+
+        if (!body.getMediaType().equals(MediaType.APPLICATION_XML_TYPE) && !body.getMediaType().equals(MediaType.TEXT_XML_TYPE)
+                && !body.getMediaType().equals(MediaType.TEXT_PLAIN_TYPE))
+            return RestApplication.returnErrorMessage(request, "The file is not an XML file");
+
+        try {
+            String xmlFileString = IOUtils.toString(uploadedInputStream, "UTF-8");
+            return addIDMEFAlertsFromXMLText(request, xmlFileString);
+
+        } catch (Exception e) {
+            return RestApplication.returnErrorMessage(request, "Problem while parsing the XML file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Receive alerts in IDMEF format and add them into a local queue file,
+     * before releasing them when the client requests it.
+     *
+     * @param request the HTTP request
+     * @return the HTTP response
+     * @throws Exception
+     */
+    @POST
+    @Path("/idmef/add")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response addIDMEFAlertsFromXMLText(@Context HttpServletRequest request, String xmlString) throws Exception {
+        if (xmlString == null || xmlString.isEmpty())
+            return RestApplication.returnErrorMessage(request, "The input text string is empty.");
+
+        IDMEFManagement.loadIDMEFAlertsFromXML(xmlString);
+        return RestApplication.returnSuccessMessage(request, "IDMEF alerts added successfully");
+    }
 }
