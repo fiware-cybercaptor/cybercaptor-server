@@ -9,3 +9,4 @@ old
 *.db
 config.properties
 !rules-with-topology.P
+*.bin
