@@ -24,6 +24,7 @@ package org.fiware.cybercaptor.server.api;
 import org.fiware.cybercaptor.server.dra.Alert;
 import org.fiware.cybercaptor.server.informationsystem.InformationSystem;
 import org.fiware.cybercaptor.server.properties.ProjectProperties;
+import org.fiware.cybercaptor.server.remediation.dynamic.DynamicRemediation;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -68,7 +69,12 @@ public class IDMEFManagement {
         List<Alert> alerts;
         if (alertsFile.exists()) {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(alertsTemporaryPath));
-            alerts = (List<Alert>) ois.readObject();
+            try {
+                alerts = (List<Alert>) ois.readObject();
+            } catch (InvalidClassException exception) {
+                // The sources have been changed since the alerts where saved, reinitialize the database
+                alerts = new ArrayList<Alert>();
+            }
         } else {
             alerts = new ArrayList<Alert>();
         }
@@ -150,6 +156,22 @@ public class IDMEFManagement {
                     CVE_array.put(cveElement);
                 }
                 alert_object.put("CVEs", CVE_array);
+
+                //Remediations
+                JSONArray remediations_array = new JSONArray();
+                try {
+                    for (List<DynamicRemediation> dynamicRemediationActions : alert.computeRemediations(informationSystem)) {
+                        JSONArray remediations_actions_array = new JSONArray();
+                        for (DynamicRemediation dynamicRemediation : dynamicRemediationActions) {
+                            JSONObject dynamicRemediationActionObject = dynamicRemediation.toJsonObject();
+                            remediations_actions_array.put(dynamicRemediationActionObject);
+                        }
+                        remediations_array.put(remediations_actions_array);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                alert_object.put("dynamic_remediations", remediations_array);
 
                 alerts_array.put(alert_object);
             }

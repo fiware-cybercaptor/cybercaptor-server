@@ -22,6 +22,14 @@
 package org.fiware.cybercaptor.server.dra;
 
 import org.apache.commons.net.ntp.TimeStamp;
+import org.fiware.cybercaptor.server.informationsystem.InformationSystem;
+import org.fiware.cybercaptor.server.informationsystem.InformationSystemHost;
+import org.fiware.cybercaptor.server.remediation.dynamic.DynamicFirewallRule;
+import org.fiware.cybercaptor.server.remediation.dynamic.DynamicRemediation;
+import org.fiware.cybercaptor.server.remediation.dynamic.PacketRedirectionRemediation;
+import org.fiware.cybercaptor.server.topology.asset.IPAddress;
+import org.fiware.cybercaptor.server.topology.asset.component.FirewallRule;
+import org.fiware.cybercaptor.server.topology.asset.component.PortRange;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 
@@ -204,5 +212,128 @@ public class Alert implements Serializable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Compute the dynamic remediations tha could prevent the effects of this alert
+     * in operational time.
+     *
+     * @param informationSystem the Information system in which this alert has raised
+     * @return the list of remediations that could be applied.
+     */
+    public List<List<DynamicRemediation>> computeRemediations(InformationSystem informationSystem) throws Exception {
+        List<List<DynamicRemediation>> remediations = new ArrayList<>();
+        if (this.getName().toLowerCase().contains("dos")) {
+            // This attack is a DOS attack and the packets related to the source should be
+            // either redirected to a black-hole, or a anti-DDOS equipment.
+            List<DynamicRemediation> remediationActions = new ArrayList<>();
+            for (String sourceString : this.getSources()) {
+                IPAddress sourceAddress = null;
+                IPAddress sourceMask = null;
+                if (sourceString.contains("/")) {
+                    //This is a network address
+                    sourceAddress = new IPAddress(sourceString.split("/")[0]);
+                    String sourceMaskString = sourceString.split("/")[1];
+
+                    if (IPAddress.isAnIPAddress(sourceMaskString)) {
+                        sourceMask = new IPAddress(sourceMaskString);
+                    } else {
+                        sourceMask = IPAddress.getIPv4NetMask(Integer.parseInt(sourceMaskString));
+                    }
+
+                } else if (IPAddress.isAnIPAddress(sourceString)) {
+                    //This is an IP address
+                    sourceAddress = new IPAddress(sourceString);
+                    sourceMask = IPAddress.getIPv4NetMask(32);
+                } else {
+                    //this might be a hostname
+                    InformationSystemHost host = informationSystem.existingMachineByNameOrIPAddress(sourceString);
+                    if (host != null && host.getInterfaces().size() > 0) {
+                        sourceAddress = host.getFirstIPAddress();
+                        sourceMask = IPAddress.getIPv4NetMask(32);
+                    }
+                }
+                if (sourceAddress != null && sourceMask != null) {
+                    remediationActions.add(new PacketRedirectionRemediation(this, sourceAddress, sourceMask));
+                } else {
+                    //Did not find the way to remediate this alert (unknown name)
+                    return remediations;
+                }
+            }
+            remediations.add(remediationActions);
+        }
+
+        // In any case, propose to the operator to block the host that is source of the attack
+        // This attack is a DOS attack and the packets related to the source should be
+        // either redirected to a black-hole, or a anti-DDOS equipment.
+        List<DynamicRemediation> remediationActions = new ArrayList<>();
+        for (String sourceString : this.getSources()) {
+            IPAddress sourceAddress = null;
+            IPAddress sourceMask = null;
+            if (sourceString.contains("/")) {
+                //This is a network address
+                sourceAddress = new IPAddress(sourceString.split("/")[0]);
+                String sourceMaskString = sourceString.split("/")[1];
+
+                if (IPAddress.isAnIPAddress(sourceMaskString)) {
+                    sourceMask = new IPAddress(sourceMaskString);
+                } else {
+                    sourceMask = IPAddress.getIPv4NetMask(Integer.parseInt(sourceMaskString));
+                }
+
+            } else if (IPAddress.isAnIPAddress(sourceString)) {
+                //This is an IP address
+                sourceAddress = new IPAddress(sourceString);
+                sourceMask = IPAddress.getIPv4NetMask(32);
+            } else {
+                //this might be a hostname
+                InformationSystemHost host = informationSystem.existingMachineByNameOrIPAddress(sourceString);
+                if (host != null && host.getInterfaces().size() > 0) {
+                    sourceAddress = host.getFirstIPAddress();
+                    sourceMask = IPAddress.getIPv4NetMask(32);
+                }
+            }
+            for (String targetString : this.getTargets()) {
+                IPAddress targetAddress = null;
+                IPAddress targetMask = null;
+                if (targetString.contains("/")) {
+                    //This is a network address
+                    targetAddress = new IPAddress(targetString.split("/")[0]);
+                    String targetMaskString = targetString.split("/")[1];
+
+                    if (IPAddress.isAnIPAddress(targetMaskString)) {
+                        targetMask = new IPAddress(targetMaskString);
+                    } else {
+                        targetMask = IPAddress.getIPv4NetMask(Integer.parseInt(targetMaskString));
+                    }
+
+                } else if (IPAddress.isAnIPAddress(targetString)) {
+                    //This is an IP address
+                    targetAddress = new IPAddress(targetString);
+                    targetMask = IPAddress.getIPv4NetMask(32);
+                } else {
+                    //this might be a hostname
+                    InformationSystemHost host = informationSystem.existingMachineByNameOrIPAddress(targetString);
+                    if (host != null && host.getInterfaces().size() > 0) {
+                        targetAddress = host.getFirstIPAddress();
+                        targetMask = IPAddress.getIPv4NetMask(32);
+                    }
+                }
+
+
+                if (sourceAddress != null && sourceMask != null && targetAddress != null && targetMask != null) {
+                    FirewallRule filteringRule = new FirewallRule(FirewallRule.Action.DROP, FirewallRule.Protocol.ANY,
+                            sourceAddress, sourceMask, PortRange.fromString("any"), targetAddress,
+                            targetMask, PortRange.fromString("any"), FirewallRule.Table.INPUT);
+                    remediationActions.add(new DynamicFirewallRule(this, filteringRule));
+                } else {
+                    //Did not find the way to remediate this alert (unknown name)
+                    return remediations;
+                }
+            }
+        }
+        remediations.add(remediationActions);
+
+        return remediations;
     }
 }
