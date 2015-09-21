@@ -709,17 +709,20 @@ public class AttackGraph implements Cloneable {
                             InformationSystemGraphArc arc = new InformationSystemGraphArc();
                             arc.setSource(from);
                             arc.setDestination(to);
-
+                            vertex.computeParentsAndChildren(this);
                             //Try to find (if applicable) the related vulnerability
                             Vertex directAccessChild = vertex.childOfType(true, "direct network access");
                             if (directAccessChild == null) {
                                 directAccessChild = vertex.childOfType(true, "multi-hop access");
                             }
                             if (directAccessChild != null) {
+                                directAccessChild.computeParentsAndChildren(this);
                                 Vertex netAccessChild = directAccessChild.childOfType(false, "netAccess");
                                 if (netAccessChild != null) {
+                                    netAccessChild.computeParentsAndChildren(this);
                                     Vertex remoteExploitChild = netAccessChild.childOfType(true, "remote exploit of a server program");
                                     if (remoteExploitChild != null) {
+                                        remoteExploitChild.computeParentsAndChildren(this);
                                         Vertex vulnExistParent = remoteExploitChild.parentOfType(false, "vulExists");
                                         if (vulnExistParent != null && vulnExistParent.fact.datalogCommand.params.length > 2) {
                                             relatedVulneravility = vulnExistParent.fact.datalogCommand.params[1];
