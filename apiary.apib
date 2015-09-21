@@ -474,4 +474,12 @@ Validate that the remediation {id_remediation} of the path {id} has been applied
     + Body
 
             {"success":"The remediation has been validated."}
-            
+
+## Get IDMEF alerts [GET /rest/json/idmef/alerts]
+Get the IDMEF alerts that have been received by the server, and not yet sent to this client,
+and their potential dynamic remediations that could prevent the described attack.
+
++ Response 200 (application/json)
+    + Body
+
+            {"alerts":[]}
