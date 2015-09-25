@@ -84,12 +84,6 @@ vim ./configuration-files/config.properties
 
 ```
 
-### Test
-
-Go on URL : http://localhost:8080/cybercaptor-server/rest/json/initialize
-
-If the result is ```{"status":"Loaded"}```, the application has been properly built and installed.
-
 ## Docker Version Deployment
 
 ### Build container (optional)
@@ -115,6 +109,14 @@ docker run -d --rm --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cybe
 Then, the application can be accessed at http://localhost:8000/cybercaptor-server/.
 
 More details about building and/or running the Docker container can be found in [container/README.md](container/README.md)
+
+### Test
+
+Go on URL : http://localhost:8080/cybercaptor-server/rest/json/initialize
+
+If the result is ```{"status":"Loaded"}```, the application has been properly built and installed.
+
+For more details, read the documentation [Installation And adminsitration Manual](./doc/InstallationAndAdministrationManual.md).
 
 ## Debugging
 
