@@ -105,7 +105,7 @@ docker run --rm --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cyberca
 If you want to run the server in background, launch the following command:
 
 ```
-docker run -d --rm --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cybercaptor-server
+docker run -d --name cybercaptor-server -p 8000:8080 fiwarecybercaptor/cybercaptor-server
 ```
 
 Then, the application can be accessed at http://localhost:8000/cybercaptor-server/.
@@ -159,8 +159,7 @@ which loads the topology, generates the attack graph with MulVAL and computes th
 Note the `-c /tmp/curl.cookie` option of curl, allowing to keep the session cookie, necessary to chain calls and keep
 the attack graph and attack paths in session.
 
-It is also possible to load the topology from an XML file, or a XML string containing the XML network topology, using the
-POST method of the `/rest/json/initialize` call :
+It is also possible to load the topology from an XML file, or a XML string containing the XML network topology, using the POST method of the `/rest/json/initialize` call :
 
 Using a XML String:
 
@@ -173,6 +172,8 @@ Using a XML file:
 ```
 curl -c /tmp/curl.cookie -X POST  -H "Content-Type: multipart/form-data"  -F "file=@./topology.xml" http://localhost:8080/cybercaptor-server/rest/json/initialize
 ```
+
+The exhaustive description of this file is XML topological file is provided in [https://github.com/fiware-cybercaptor/cybercaptor-data-extraction/blob/master/doc/topology-file-specifications.md](https://github.com/fiware-cybercaptor/cybercaptor-data-extraction/blob/master/doc/topology-file-specifications.md). This file can be generated automatically using [CyberCAPTOR-Data-Extraction](https://github.com/fiware-cybercaptor/cybercaptor-data-extraction).
 
 #### Attack graph, attack paths and remediation calls
 

@@ -141,6 +141,8 @@ remediations-history-path=/root/.remediation/remediations-history.bin # The path
 alerts-temporary-path=/root/.remediation/alerts-temp.bin # The path where the IDMEF alerts are temporary stored.
 ```
 
+More information about the parameters can be found in [CyberCAPTOR-Data-Extraction README](https://github.com/fiware-cybercaptor/cybercaptor-data-extraction).
+
 # Sanity check procedures
 
 ## End to End testing

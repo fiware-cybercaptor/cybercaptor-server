@@ -76,6 +76,8 @@ Using a XML file:
 curl -c /tmp/curl.cookie -X POST  -H "Content-Type: multipart/form-data"  -F "file=@./topology.xml" http://localhost:8080/cybercaptor-server/rest/json/initialize
 ```
 
+The exhaustive description of this file is XML topological file is provided in [https://github.com/fiware-cybercaptor/cybercaptor-data-extraction/blob/master/doc/topology-file-specifications.md](https://github.com/fiware-cybercaptor/cybercaptor-data-extraction/blob/master/doc/topology-file-specifications.md). This file can be generated automatically using [CyberCAPTOR-Data-Extraction](https://github.com/fiware-cybercaptor/cybercaptor-data-extraction).
+
 #### Attack graph, attack paths and remediation calls
 
 Then, the calls to get the attack paths, attack graph or remediations can be used:

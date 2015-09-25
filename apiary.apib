@@ -5,7 +5,7 @@ FORMAT: 1A
 This is the Open Specification of the REST API of **CyberCAPTOR server**.
 **CyberCAPTOR server** is the Java Server of [FIWARE Cyber seCurity Attack graPh moniTORing](https://github.com/fiware-cybercaptor/cybercaptor-server).
 **CyberCAPTOR** implements the FIWARE CyberSecurity Generic Enabler.
-  
+
 # Group REST API without inititialization
 This group of REST calls contains the API calls that **do not need** the `/initialize` call that loads the vulnerability and remediation database and generates the attack graph and the attack paths.
 
@@ -13,7 +13,7 @@ This group of REST calls contains the API calls that **do not need** the `/initi
 Get REST API version information. Generally useful to test that the installation is working.
 
 ### Version [GET /rest/version]
-Get the simple version of the API. 
+Get the simple version of the API.
 
 + Response 200 (text/plain)
 
@@ -26,7 +26,7 @@ Get the API version in JSON.
     + Body
 
             {"version":"4.4"}
-            
+
 ## Group Configuration [/rest/json/configuration]
 This group contains the calls related to the configuration (remediation cost parameters...).
 
@@ -48,7 +48,7 @@ Set the global remediation cost parameters.
 + Response 200 (application/json)
 
         {}
-            
+
 ### Get snort rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/snort-rule]
 Get the operational cost parameters for a snort rule.
 
@@ -67,7 +67,7 @@ Set the operational cost parameters for a snort rule.
 + Response 200 (application/json)
 
         {}
-            
+
 ### Get firewall rule remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/firewall-rule]
 Get the operational cost parameters for a firewall rule.
 
@@ -86,7 +86,7 @@ Set the operational cost parameters for a firewall rule.
 + Response 200 (application/json)
 
         {}
-            
+
 ### Get patch remediation cost parameters [GET /rest/json/configuration/remediation-cost-parameters/patch]
 Get the operational cost parameters for a patch.
 
@@ -176,6 +176,7 @@ From the data on disk (.csv inputs files and Nessus vulnerability scan)
 
 ### Initialize from XML topology [POST]
 From an XML topology file containing all information about network topology, firewalling, routing configuration, vulnerabilities...
+See https://github.com/fiware-cybercaptor/cybercaptor-data-extraction/blob/master/doc/topology-file-specifications.md for more information.
 
 + Request (application/xml)
 
@@ -353,7 +354,7 @@ Get the list of hosts with their security requirements.
 + Response 200 (application/json)
 
         {"hosts":[]}
-        
+
 ### Set the host list [POST]
 Set the hosts and their security_requirements.
 
@@ -364,7 +365,7 @@ Set the hosts and their security_requirements.
 + Response 200 (application/json)
 
         {}
-        
+
 ## Group Attack graphs [/rest/json/attack_graph]
 This group contains the calls related to the attack graph, after initialization.
 
@@ -374,21 +375,21 @@ Get the whole attack graph.
 + Response 200 (application/json)
 
         {"attack_graph":{"arcs":{},"vertices":{}}}
-        
+
 ### Get the attack graph score [GET /rest/json/attack_graph/score]
 Get the attack graph score.
 
 + Response 200 (application/json)
 
         {"score":""}
-        
+
 ### Get the topological attack graph [GET /rest/json/attack_graph/topological]
 Get the attack graph in its topological form.
 
 + Response 200 (application/json)
 
         {"arcs":{}, "vertices":{}}
-        
+
 ## Group Attack paths [/rest/json/attack_path]
 This group contains the calls related to the attack paths, after initialization.
 
@@ -398,7 +399,7 @@ Get the list of attack paths.
 + Response 200 (application/json)
 
         {"attack_paths":{}}
-        
+
 ### Get the number of attack paths [GET /rest/json/attack_path/number]
 Get the total number of attack paths.
 
@@ -431,7 +432,7 @@ Get the attack path {id} as a topological graph.
     + Body
 
             {"arcs":{}, "vertices":{}}
-            
+
 ### Get the remediations to an attack path [GET /rest/json/attack_path/{id}/remediations]
 Get the remediations of the attack path {id}.
 
@@ -444,7 +445,7 @@ Get the remediations of the attack path {id}.
     + Body
 
             {"remediations":{}}
-            
+
 ### Simulate the remediation to an attack path [GET /rest/json/attack_path/{id}/remediation/{id_remediation}]
 Simulate the remediation {id_remediation} of the path {id}, and compute the new attack graph.
 
