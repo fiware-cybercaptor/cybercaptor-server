@@ -11,8 +11,8 @@ This documentation can be accessed online at [https://cybercaptor.readthedocs.or
 
 The main documentation of CyberCAPTOR-Server is organized into a couple sections:
 
-- [Installation and Administration Manual](./InstallationAndAdministrationManual.rst)
-- [User and Programmers Manual](./UserAndProgrammersManual.rst)
+- [Installation and Administration Manual](./InstallationAndAdministrationManual.md)
+- [User and Programmers Manual](./UserAndProgrammersManual.md)
 
 Information about development is also available [in the README file](https://github.com/fiware-cybercaptor/cybercaptor-server/blob/master/README.md).
 
