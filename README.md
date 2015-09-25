@@ -84,6 +84,8 @@ vim ./configuration-files/config.properties
 
 ```
 
+For more details, read the documentation [Installation And adminsitration Manual](./doc/InstallationAndAdministrationManual.md).
+
 ## Docker Version Deployment
 
 ### Build container (optional)
@@ -210,7 +212,11 @@ curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/topo
 
 The full list of API calls and specifications is stored in [apiary.apib](apiary.apib) and can be visualized on [Apiary.io](http://docs.cybercaptor.apiary.io/#) using the [Apiary Blueprint format](https://apiblueprint.org/).
 
+For more details, please refer to [User & Programmers manual](./doc/UserAndProgrammersManual.md#user-guide).
+
 ## Developers
+
+If you want to participate to the development of CyberCAPTOR-Server, all contributions are welcome.
 
 ### Javadoc
 
@@ -258,3 +264,5 @@ dredd
 ```
 
 In addition to the console reports provided by dredd, a detailed report file can be found in `tools/api/report.html`.
+
+For more details, refer to the [User & Programmers manual](./doc/UserAndProgrammersManual.md#programmer-guide).
