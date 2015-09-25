@@ -115,7 +115,7 @@ curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/topo
 The full list of API calls and specifications is stored in [apiary.apib](../apiary.apib) and can be visualized on [Apiary.io](http://docs.cybercaptor.apiary.io/#) using the [Apiary Blueprint format](https://apiblueprint.org/).
 
 
-# Programmers Guide
+# Programmer Guide
 This guide describe how to develop within CyberCAPTOR-Server.
 
 ## Javadoc
