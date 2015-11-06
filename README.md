@@ -71,9 +71,10 @@ This can also be done using the tomcat GUI manager, or with Maven's tomcat7 plug
 
 ```
 sudo ln -s `pwd`/configuration-files /usr/share/tomcat7/.remediation
-sudo ln -s `pwd`/src/main/python/ /usr/share/tomcat7/python_scripts
 chmod -R o+rw ./configuration-files/
 sudo chown -R tomcat7:tomcat7 /usr/share/tomcat7/
+cd .. #Go in the parent folder of cybercaptor-server
+git clone https://github.com/fiware-cybercaptor/cybercaptor-data-extraction.git # Clone the cyber-data-extraction for the "mulval-input-script-folder" parameter.
 ```
 
 3) Copy and edit the configuration file
