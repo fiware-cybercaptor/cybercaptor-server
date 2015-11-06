@@ -1,0 +1,18 @@
+#Mandatory parameters
+xsb-path=/opt/XSB/bin
+output-path=/root/.remediation/tmp
+mulval-path=/opt/mulval/
+mulval-rules-path=/root/.remediation/rules-with-topology.P
+cost-parameters-path=/root/.remediation/cost-parameters
+database-path=/root/.remediation/vulnerability-remediation-database.db
+python-path=/usr/bin/python
+mulval-input-script-folder=/root/cyber-data-extraction/
+host-interfaces-path=/root/.remediation/inputs/hosts-interfaces.csv
+vlans-path=/root/.remediation/inputs/vlans.csv
+routing-path=/root/.remediation/inputs/routing.csv
+flow-matrix-path=/root/.remediation/inputs/flow-matrix.csv
+vulnerability-scan-path=/root/.remediation/inputs/scan.nessus
+mulval-input=/root/.remediation/tmp/mulval-input-generated.P
+topology-path=/root/.remediation/inputs/topology-generated.xml
+remediations-history-path=/root/.remediation/remediations-history.bin
+alerts-temporary-path=/root/.remediation/alerts-temp.bin
