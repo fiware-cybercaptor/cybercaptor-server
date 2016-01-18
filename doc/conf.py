@@ -190,7 +190,7 @@ htmlhelp_basename = 'CyberCAPTOR-Serverdoc'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('root', 'cybercaptor-server', u'CyberCAPTOR-Server Documentation',
+    ('root', 'cybercaptor-server', u'CyberCAPTOR-Server - User and Programmers Guide',
      [u'François-Xavier Aguessy'], 1)
 ]
 
@@ -204,7 +204,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('root', 'CyberCAPTOR-Server', u'CyberCAPTOR-Server Documentation',
+  ('root', 'CyberCAPTOR-Server', u'CyberCAPTOR-Server - User and Programmers Guide',
    u'François-Xavier Aguessy', 'CyberCAPTOR-Server', 'One line description of project.',
    'Miscellaneous'),
 ]

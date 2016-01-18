@@ -21,10 +21,7 @@ Table of Contents
    :maxdepth: 3
    :numbered:
 
-   InstallationAndAdministrationManual.rst
    UserAndProgrammersManual.rst
-   CyberCAPTOR-Client <http://cybercaptor.readthedocs.org/projects/cybercaptor-client/en/latest/>
-   CyberCAPTOR-P2DS <http://cybercaptor.readthedocs.org/projects/cybercaptor-p2ds/en/latest/>
 
 Information about development is also available `in the README
 file <https://github.com/fiware-cybercaptor/cybercaptor-server/blob/master/README.md>`__.
