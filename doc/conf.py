@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'CyberCAPTOR-Server'
-copyright = u'2015, FIWARE'
+copyright = u'2015, Thales Services'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -190,7 +190,7 @@ htmlhelp_basename = 'CyberCAPTOR-Serverdoc'
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('root', 'cybercaptor-server', u'CyberCAPTOR-Server Documentation',
+    ('root', 'cybercaptor-server', u'CyberCAPTOR-Server - Installation and Administration Guide',
      [u'François-Xavier Aguessy'], 1)
 ]
 
@@ -204,7 +204,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('root', 'CyberCAPTOR-Server', u'CyberCAPTOR-Server Documentation',
+  ('root', 'CyberCAPTOR-Server', u'CyberCAPTOR-Server - Installation and Administration Guide',
    u'François-Xavier Aguessy', 'CyberCAPTOR-Server', 'One line description of project.',
    'Miscellaneous'),
 ]
