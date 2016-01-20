@@ -100,13 +100,29 @@ Using a XML String:
 
 ::
 
-    curl -c /tmp/curl.cookie -H "Content-Type: application/xml" -X POST -d '<topology><machine><name>linux-user-1</name><security_requirement>7</security_requirement><interfaces><interface><name>eth0</name><ipaddress>192.168.1.111</ipaddress><vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces><routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask><gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine><machine><name>linux-user-2</name><security_requirement>30</security_requirement><interfaces><interface><name>eth0</name><ipaddress>192.168.1.112</ipaddress><vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces><services><service><name>mdns</name><ipaddress>192.168.1.112</ipaddress><protocol>udp</protocol><port>5353</port><vulnerabilities><vulnerability><type>remoteExploit</type><cve>CVE-2007-2446</cve><goal>privEscalation</goal><cvss>10.0</cvss></vulnerability></vulnerabilities></service></services><routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask><gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine></topology>' http://localhost:8080/cybercaptor-server/rest/json/initialize
+    curl -c /tmp/curl.cookie -H "Content-Type: application/xml" -X POST -d '<topology><machine> \
+    <name>linux-user-1</name><security_requirement>7</security_requirement> \
+    <interfaces><interface><name>eth0</name><ipaddress>192.168.1.111</ipaddress> \
+    <vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces> \
+    <routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask> \
+    <gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine> \
+    <machine><name>linux-user-2</name><security_requirement>30</security_requirement> \
+    <interfaces><interface><name>eth0</name><ipaddress>192.168.1.112</ipaddress> \
+    <vlan><name>user-lan</name><label>user-lan</label></vlan></interface></interfaces> \
+    <services><service><name>mdns</name><ipaddress>192.168.1.112</ipaddress> \
+    <protocol>udp</protocol><port>5353</port><vulnerabilities><vulnerability> \
+    <type>remoteExploit</type><cve>CVE-2007-2446</cve><goal>privEscalation</goal> \
+    <cvss>10.0</cvss></vulnerability></vulnerabilities></service></services> \
+    <routes><route><destination>0.0.0.0</destination><mask>0.0.0.0</mask> \
+    <gateway>192.168.1.111</gateway><interface>eth0</interface></route></routes></machine></topology>' \
+    http://localhost:8080/cybercaptor-server/rest/json/initialize
 
 Using a XML file:
 
 ::
 
-    curl -c /tmp/curl.cookie -X POST  -H "Content-Type: multipart/form-data"  -F "file=@./topology.xml" http://localhost:8080/cybercaptor-server/rest/json/initialize
+    curl -c /tmp/curl.cookie -X POST  -H "Content-Type: multipart/form-data" \
+    -F "file=@./topology.xml" http://localhost:8080/cybercaptor-server/rest/json/initialize
 
 The exhaustive description of this file is XML topological file is
 provided in
@@ -145,7 +161,8 @@ Get the remediations for attack path 0:
 
 ::
 
-    curl -b /tmp/curl.cookie http://localhost:8080/cybercaptor-server/rest/json/attack_path/0/remediations
+    curl -b /tmp/curl.cookie \
+    http://localhost:8080/cybercaptor-server/rest/json/attack_path/0/remediations
 
 Get the XML network topology (useful for backups):
 
